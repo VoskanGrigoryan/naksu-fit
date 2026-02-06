@@ -1,14 +1,17 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+
   "productName": "naksu-fit",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.naksu.fit",
+
   "build": {
-    "frontendDist": "../build",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
   },
+
   "app": {
     "windows": [
       {
@@ -23,6 +26,7 @@
       "csp": null
     }
   },
+
   "bundle": {
     "active": true,
     "targets": "all",

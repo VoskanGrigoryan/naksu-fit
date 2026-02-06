@@ -1,4 +1,4 @@
-
 .auth-card {
-    width: 350px;
+  width: 350px;
+  background-color: var(--bg-container);
 }

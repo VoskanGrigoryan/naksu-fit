@@ -1,15 +1,16 @@
-import { Button, Card, Input, Space, Typography } from "antd";
+import { Button, Card, Input, Space } from "antd";
 
 import AuthLayout from "../../layouts/auth/AuthLayout";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import styles from "./Auth.module.css";
-
-const { Title } = Typography;
+import naksuLogo from "../../assets/naksu.svg";
 
 const AuthView = () => {
   return (
     <AuthLayout>
-      <Title level={2}>Naksu Fit</Title>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <img src={naksuLogo} alt="Naksu Logo" style={{ height: 130}} />
+      </div>
       <Card className={styles["auth-card"]}>
         <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
           <Input placeholder="Usuario" size="large" prefix={<UserOutlined />} />
