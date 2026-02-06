@@ -1,7 +1,9 @@
+import RoutesConfig from "./routes";
+
 function App() {
   return (
     <div>
-      <h1>Naksu Fit</h1>
+      <RoutesConfig />
     </div>
   );
 }

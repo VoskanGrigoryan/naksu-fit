@@ -1,0 +1,21 @@
+.auth-layout {
+  min-height: 100vh;
+  background-color: var(--bg-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.auth-footer {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  width: 100%;
+}
