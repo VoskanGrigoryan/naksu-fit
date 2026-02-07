@@ -1,31 +1,37 @@
-import { Button, Card, Input, Space } from "antd";
+import { Button, Input, Paper, PasswordInput, Stack } from "@mantine/core";
 
 import AuthLayout from "../../layouts/auth/AuthLayout";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 import styles from "./Auth.module.css";
 import naksuLogo from "../../assets/naksu.svg";
+import { IconKeyFilled, IconUser } from "@tabler/icons-react";
 
 const AuthView = () => {
+  const navigate = useNavigate();
+
   return (
     <AuthLayout>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <img src={naksuLogo} alt="Naksu Logo" style={{ height: 130}} />
-      </div>
-      <Card className={styles["auth-card"]}>
-        <Space orientation="vertical" size="middle" style={{ display: "flex" }}>
-          <Input placeholder="Usuario" size="large" prefix={<UserOutlined />} />
-          <Input.Password
-            placeholder="Contraseña"
-            size="large"
-            prefix={<LockOutlined />}
-          />
-          <div>
-            <Button type="primary" size="large" style={{ width: "100%" }}>
+      <div className={styles.container}>
+        <div className={styles.logoContainer}>
+          <img src={naksuLogo} alt="Naksu Logo" style={{ height: 130 }} />
+        </div>
+        <Paper shadow="lg" radius="md" p="xl" className={styles.paper}>
+          <Stack gap="md">
+            <Input placeholder="Usuario" leftSection={<IconUser size={18} />} />
+            <PasswordInput
+              placeholder="Contraseña"
+              leftSection={<IconKeyFilled size={18} />}
+            />
+            <Button
+              size="large"
+              style={{ width: "100%" }}
+              onClick={() => navigate("/dashboard")}
+            >
               Iniciar sesión
             </Button>
-          </div>
-        </Space>
-      </Card>
+          </Stack>
+        </Paper>
+      </div>
     </AuthLayout>
   );
 };

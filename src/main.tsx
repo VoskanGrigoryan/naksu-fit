@@ -2,16 +2,17 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
-import "antd/dist/reset.css";
 import { BrowserRouter } from "react-router-dom";
-import AppThemeProvider from "./providers/AppThemeProvider.tsx";
+import { MantineProvider } from "@mantine/core";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AppThemeProvider>
+    <MantineProvider defaultColorScheme="dark">
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </AppThemeProvider>
+    </MantineProvider>
   </StrictMode>,
 );

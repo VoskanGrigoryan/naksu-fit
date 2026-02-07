@@ -1,18 +1,21 @@
-import { Layout } from "antd";
-import styles from "./AuthLayout.module.css";
-import { GlobalOutlined } from "@ant-design/icons";
-
-const { Content, Footer } = Layout;
+import { AppShell } from "@mantine/core";
+import { IconSettings } from "@tabler/icons-react";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Layout className={styles["auth-layout"]}>
-      <Content className={styles["auth-content"]}>{children}</Content>
-
-      <Footer className={styles["auth-footer"]}>
-        <GlobalOutlined style={{fontSize: 24}}/>
-      </Footer>
-    </Layout>
+    <AppShell>
+      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Footer
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          height: 32,
+        }}
+      >
+        <IconSettings style={{ marginRight: 20 }} size={20} />
+      </AppShell.Footer>
+    </AppShell>
   );
 };
 
