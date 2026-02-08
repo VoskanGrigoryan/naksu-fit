@@ -20,4 +20,13 @@ body {
 
 #root {
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
+
+
+.mantine-datatable-table[data-highlight-on-hover] tbody tr:hover {
+  background: rgba(255,255,255,0.06) !important;
+}
+
+@layer mantine, mantine-datatable;

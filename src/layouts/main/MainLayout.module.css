@@ -1,24 +1,18 @@
 .navbar {
-  width: 70px;
-  padding: var(--mantine-spacing-md);
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  background-color: var(--mantine-color-blue-6);
 }
 
 .navbarMain {
   flex: 1;
-  margin-top:20px;
+  margin-top: 20px;
 }
 
 .link {
   width: auto;
   height: auto;
-  padding: var(--mantine-spacing-xs);
-  margin-bottom: var(--mantine-spacing-sm);
-  border-radius: var(--mantine-radius-md);
+  margin-bottom: 8px;
+  border-radius: var(--mantine-radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;

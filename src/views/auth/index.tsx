@@ -1,10 +1,11 @@
-import { Button, Input, Paper, PasswordInput, Stack } from "@mantine/core";
+import {  Input, Paper, PasswordInput, Stack } from "@mantine/core";
 
 import AuthLayout from "../../layouts/auth/AuthLayout";
 import { useNavigate } from "react-router-dom";
 import styles from "./Auth.module.css";
 import naksuLogo from "../../assets/naksu.svg";
 import { IconKeyFilled, IconUser } from "@tabler/icons-react";
+import CustomButton from "../../components/reusable/Button";
 
 const AuthView = () => {
   const navigate = useNavigate();
@@ -22,13 +23,13 @@ const AuthView = () => {
               placeholder="Contraseña"
               leftSection={<IconKeyFilled size={18} />}
             />
-            <Button
+            <CustomButton
               size="large"
               style={{ width: "100%" }}
               onClick={() => navigate("/dashboard")}
             >
               Iniciar sesión
-            </Button>
+            </CustomButton>
           </Stack>
         </Paper>
       </div>

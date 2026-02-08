@@ -1,5 +1,4 @@
 import { AppShell } from "@mantine/core";
-import { IconSettings } from "@tabler/icons-react";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -11,10 +10,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           justifyContent: "flex-end",
           alignItems: "center",
           height: 32,
+          paddingRight: 20,
         }}
-      >
-        <IconSettings style={{ marginRight: 20 }} size={20} />
-      </AppShell.Footer>
+      ></AppShell.Footer>
     </AppShell>
   );
 };

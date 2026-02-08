@@ -1,11 +1,5 @@
-import {
-  AppShell,
-  Button,
-  Stack,
-  Tooltip,
-  UnstyledButton,
-} from "@mantine/core";
-import React, { useState } from "react";
+import { AppShell, Stack, Tooltip, UnstyledButton } from "@mantine/core";
+import React from "react";
 import {
   IconClipboardList,
   IconHome2,
@@ -14,6 +8,7 @@ import {
 } from "@tabler/icons-react";
 import styles from "./MainLayout.module.css";
 import { useNavigate } from "react-router-dom";
+import { useUIStore } from "../../store/uiStore";
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
@@ -26,12 +21,13 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton
+        style={{ padding: "var(--mantine-spacing-xs)" }}
         onClick={onClick}
         className={styles.link}
         data-active={active || undefined}
         aria-label={label}
       >
-        <Icon size={28} stroke={1.5} />
+        <Icon size={24} stroke={2} />
       </UnstyledButton>
     </Tooltip>
   );
@@ -40,12 +36,13 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
-  const [active, setActive] = useState(0);
+  const active = useUIStore((s) => s.selectedNavbarIndex);
+  const setActive = useUIStore((s) => s.setSelectedNavbarIndex);
 
   const mockdata = [
-    { icon: IconHome2, label: "Panel principal" },
-    { icon: IconUser, label: "Usuarios" },
-    { icon: IconClipboardList, label: "Planes" },
+    { icon: IconHome2, label: "Panel principal", path: "/dashboard" },
+    { icon: IconUser, label: "Usuarios", path: "/users" },
+    { icon: IconClipboardList, label: "Planes", path: "/plans" },
   ];
 
   const links = mockdata.map((link, index) => (
@@ -53,37 +50,58 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {
+        setActive(index);
+        navigate(link.path);
+      }}
     />
   ));
 
   return (
     <AppShell
       navbar={{
-        width: { base: 70 },
+        width: { base: 60 },
         breakpoint: "xs",
       }}
     >
-      <AppShell.Navbar p={0} className={styles.navbar}>
+      <AppShell.Navbar
+        className={styles.navbar}
+        style={{ backgroundColor: "var(--mantine-color-blue-6)" }}
+      >
         <div className={styles.navbarMain}>
           <Stack justify="center" gap={0}>
             {links}
           </Stack>
         </div>
 
-        <Stack justify="center" gap={0} style={{ paddingBottom: 10 }}>
+        <Stack justify="center">
           <Tooltip
             label={"Cerrar sesión"}
             position="right"
             transitionProps={{ duration: 0 }}
           >
-            <Button onClick={() => navigate("/auth")} fullWidth>
-              <IconLogout />
-            </Button>
+            <UnstyledButton
+              style={{ padding: "var(--mantine-spacing-xs)" }}
+              onClick={() => {
+                setActive(0);
+                navigate("/auth");
+              }}
+              className={styles.link}
+            >
+              <IconLogout size={24} stroke={2} />
+            </UnstyledButton>
           </Tooltip>
         </Stack>
       </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main
+        style={{
+          padding: "var(--mantine-spacing-lg)",
+          backgroundColor: "var(--mantine-color-dark-6)",
+          marginLeft: "60px",
+        }}
+      >
+        {children}
+      </AppShell.Main>
     </AppShell>
   );
 };
