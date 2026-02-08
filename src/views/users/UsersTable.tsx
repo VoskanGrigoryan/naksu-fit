@@ -1,11 +1,12 @@
-import { ActionIcon, Badge, Stack, TextInput } from "@mantine/core";
-import { showNotification } from "@mantine/notifications";
+import { ActionIcon, Badge, Group, Stack, TextInput } from "@mantine/core";
 import { DataTable, type DataTableSortStatus } from "mantine-datatable";
-import { IconPencil, IconSearch, IconX } from "@tabler/icons-react";
+import { IconEye, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import sortBy from "lodash/sortBy";
 import { useMemo, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { mockUsers } from "../../mocks/userTableData";
+import { useNavigate } from "react-router-dom";
+import styles from "./Users.module.css";
 
 type PaymentStatus = "paid" | "pending" | "overdue";
 
@@ -16,12 +17,14 @@ const paymentBadgeColor: Record<PaymentStatus, string> = {
 };
 
 const paymentLabel: Record<PaymentStatus, string> = {
-  paid: "Pagado",
+  paid: "Abonado",
   pending: "Pendiente",
   overdue: "Vencido",
 };
 
 export default function UsersTable() {
+  const navigate = useNavigate();
+
   type User = (typeof mockUsers)[number];
 
   const [nameQuery, setNameQuery] = useState("");
@@ -111,17 +114,31 @@ export default function UsersTable() {
       ),
       filtering: emailQuery !== "",
     },
-    { accessor: "birthday", title: "Fecha nacimiento", sortable: true },
+    { accessor: "birthday", title: "Nacimiento", sortable: true },
     {
       accessor: "active",
       title: "Estado",
       sortable: true,
+      width: "80px", // enough for "Activo"/"Inactivo"
+      textAlignment: "center" as const,
+      cellsStyle: () => ({
+        textAlign: "center" as const,
+        paddingLeft: 8,
+        paddingRight: 8,
+      }),
       render: (record: User) => (record.active ? "Activo" : "Inactivo"),
     },
     {
       accessor: "paymentStatus",
       title: "Pago",
       sortable: true,
+      width: "110px", // enough for the badge
+      textAlignment: "center" as const,
+      cellsStyle: () => ({
+        textAlign: "center" as const,
+        paddingLeft: 8,
+        paddingRight: 8,
+      }),
       render: (record: User) => (
         <Badge
           style={{ paddingTop: 4 }}
@@ -136,9 +153,32 @@ export default function UsersTable() {
     },
     {
       accessor: "actions",
-      title: "",
-      textAlignment: "right",
-      render: () => <IconPencil size={20} />,
+      title: "Acciones",
+      width: 90, // px, not %
+      textAlignment: "center" as const,
+      cellsStyle: () => ({
+        textAlign: "center" as const,
+        paddingLeft: 8,
+        paddingRight: 8,
+      }),
+      render: (record: User) => (
+        <Group gap={6} wrap="nowrap" justify="center">
+          <IconEye
+            size={20}
+            color="var(--mantine-color-blue-6)"
+            className={styles.icon}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/user/${record.id}`);
+            }}
+          />
+          <IconTrash
+            size={20}
+            color="var(--mantine-color-red-6)"
+            className={styles.icon}
+          />
+        </Group>
+      ),
     },
   ];
 
@@ -146,20 +186,18 @@ export default function UsersTable() {
     <Stack align="flex-start">
       <DataTable
         withTableBorder
+        withColumnBorders
         highlightOnHover
         records={records}
         columns={columns}
         sortStatus={sortStatus}
         onSortStatusChange={setSortStatus}
         height="90vh"
-        onRowClick={(row) =>
-          showNotification({
-            title: `Clic en ${row.record.name}`,
-            message: `${row.record.name} — ${row.record.email}`,
-            withBorder: true,
-          })
-        }
-        style={{ width: "91vw", borderRadius: "var(--mantine-radius-sm)" }}
+        style={{
+          width: "92vw",
+          borderRadius: "var(--mantine-radius-sm)",
+          tableLayout: "fixed",
+        }}
       />
     </Stack>
   );

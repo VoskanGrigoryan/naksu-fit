@@ -26,7 +26,7 @@ const AuthView = () => {
             <CustomButton
               size="large"
               style={{ width: "100%" }}
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/")}
             >
               Iniciar sesión
             </CustomButton>

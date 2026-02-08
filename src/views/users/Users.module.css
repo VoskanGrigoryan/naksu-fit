@@ -1,0 +1,8 @@
+.icon {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.icon:hover {
+  filter: brightness(1.3);
+}

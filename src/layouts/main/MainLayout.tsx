@@ -40,7 +40,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const setActive = useUIStore((s) => s.setSelectedNavbarIndex);
 
   const mockdata = [
-    { icon: IconHome2, label: "Panel principal", path: "/dashboard" },
+    { icon: IconHome2, label: "Panel principal", path: "/" },
     { icon: IconUser, label: "Usuarios", path: "/users" },
     { icon: IconClipboardList, label: "Planes", path: "/plans" },
   ];
