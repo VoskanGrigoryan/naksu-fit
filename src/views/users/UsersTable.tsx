@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Group, Stack, TextInput } from "@mantine/core";
+import { ActionIcon, Badge, Group, Stack, TextInput, Skeleton } from "@mantine/core";
 import { DataTable, type DataTableSortStatus } from "mantine-datatable";
 import { IconEye, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import sortBy from "lodash/sortBy";
@@ -22,7 +22,7 @@ const paymentLabel: Record<PaymentStatus, string> = {
   overdue: "Vencido",
 };
 
-export default function UsersTable() {
+export default function UsersTable({ loading }: { loading: boolean }) {
   const navigate = useNavigate();
 
   type User = (typeof mockUsers)[number];
@@ -119,7 +119,7 @@ export default function UsersTable() {
       accessor: "active",
       title: "Estado",
       sortable: true,
-      width: "80px", // enough for "Activo"/"Inactivo"
+      width: "80px",
       textAlignment: "center" as const,
       cellsStyle: () => ({
         textAlign: "center" as const,
@@ -132,7 +132,7 @@ export default function UsersTable() {
       accessor: "paymentStatus",
       title: "Pago",
       sortable: true,
-      width: "110px", // enough for the badge
+      width: "110px",
       textAlignment: "center" as const,
       cellsStyle: () => ({
         textAlign: "center" as const,
@@ -154,7 +154,7 @@ export default function UsersTable() {
     {
       accessor: "actions",
       title: "Acciones",
-      width: 90, // px, not %
+      width: 90,
       textAlignment: "center" as const,
       cellsStyle: () => ({
         textAlign: "center" as const,
@@ -184,21 +184,23 @@ export default function UsersTable() {
 
   return (
     <Stack align="flex-start">
-      <DataTable
-        withTableBorder
-        withColumnBorders
-        highlightOnHover
-        records={records}
-        columns={columns}
-        sortStatus={sortStatus}
-        onSortStatusChange={setSortStatus}
-        height="90vh"
-        style={{
-          width: "92vw",
-          borderRadius: "var(--mantine-radius-sm)",
-          tableLayout: "fixed",
-        }}
-      />
+      <Skeleton visible={loading}>
+        <DataTable
+          withTableBorder
+          withColumnBorders
+          highlightOnHover
+          records={records}
+          columns={columns}
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
+          height="90vh"
+          style={{
+            width: "92vw",
+            borderRadius: "var(--mantine-radius-sm)",
+            tableLayout: "fixed",
+          }}
+        />
+      </Skeleton>
     </Stack>
   );
 }

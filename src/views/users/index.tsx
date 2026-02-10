@@ -1,4 +1,5 @@
-import { Group, Stack } from "@mantine/core";
+import { Group, Stack, Box, LoadingOverlay } from "@mantine/core";
+import { useEffect, useState } from "react";
 import MainLayout from "../../layouts/main/MainLayout";
 import UsersTable from "./UsersTable";
 import CustomButton from "../../components/reusable/Button";
@@ -10,10 +11,22 @@ import {
 } from "@tabler/icons-react";
 
 const Users = () => {
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [reloading, setReloading] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setInitialLoading(false), 800);
+    return () => clearTimeout(t);
+  }, []);
+
+  const handleReload = () => {
+    setReloading(true);
+    setTimeout(() => setReloading(false), 800);
+  };
+
   return (
     <MainLayout>
       <Stack align="flex-start" mb="md">
-        {/* Acciones */}
         <Group>
           <CustomButton
             rightSection={
@@ -49,13 +62,16 @@ const Users = () => {
             rightSection={
               <IconReload size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
             }
+            onClick={handleReload}
           >
             Actualizar tabla
           </CustomButton>
         </Group>
 
-        {/* Tabla de usuarios */}
-        <UsersTable />
+        <Box pos="relative">
+          <LoadingOverlay visible={reloading} />
+          <UsersTable loading={initialLoading} />
+        </Box>
       </Stack>
     </MainLayout>
   );
