@@ -26,8 +26,16 @@ const Users = () => {
 
   return (
     <MainLayout>
-      <Stack align="flex-start" mb="md">
-        <Group>
+      <Stack style={{ flex: 1 }} gap="sm">
+        <Group
+          style={{
+            backgroundColor: "var(--mantine-color-dark-7)",
+            padding: 8,
+            borderRadius: 4,
+            width: "100%",
+            flexShrink: 0,
+          }}
+        >
           <CustomButton
             rightSection={
               <IconPlus size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
@@ -35,6 +43,7 @@ const Users = () => {
           >
             Nuevo usuario
           </CustomButton>
+
           <CustomButton
             variant="outline"
             rightSection={
@@ -47,20 +56,29 @@ const Users = () => {
           >
             Importar usuarios
           </CustomButton>
+
           <CustomButton
             variant="outline"
-            style={{ paddingTop: 4 }}
             rightSection={
-              <IconUpload size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
+              <IconUpload
+                size={20}
+                stroke={1.5}
+                style={{ paddingBottom: 4 }}
+              />
             }
           >
             Exportar usuarios
           </CustomButton>
+
           <CustomButton
             variant="outline"
             color="green"
             rightSection={
-              <IconReload size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
+              <IconReload
+                size={20}
+                stroke={1.5}
+                style={{ paddingBottom: 4 }}
+              />
             }
             onClick={handleReload}
           >
@@ -68,7 +86,7 @@ const Users = () => {
           </CustomButton>
         </Group>
 
-        <Box pos="relative">
+        <Box style={{ flex: 1, position: "relative" }}>
           <LoadingOverlay visible={reloading} />
           <UsersTable loading={initialLoading} />
         </Box>

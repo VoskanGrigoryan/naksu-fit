@@ -1,4 +1,11 @@
-import { ActionIcon, Badge, Group, Stack, TextInput, Skeleton } from "@mantine/core";
+import {
+  ActionIcon,
+  Badge,
+  Group,
+  TextInput,
+  Box,
+  Skeleton,
+} from "@mantine/core";
 import { DataTable, type DataTableSortStatus } from "mantine-datatable";
 import { IconEye, IconSearch, IconTrash, IconX } from "@tabler/icons-react";
 import sortBy from "lodash/sortBy";
@@ -121,11 +128,6 @@ export default function UsersTable({ loading }: { loading: boolean }) {
       sortable: true,
       width: "80px",
       textAlignment: "center" as const,
-      cellsStyle: () => ({
-        textAlign: "center" as const,
-        paddingLeft: 8,
-        paddingRight: 8,
-      }),
       render: (record: User) => (record.active ? "Activo" : "Inactivo"),
     },
     {
@@ -134,14 +136,8 @@ export default function UsersTable({ loading }: { loading: boolean }) {
       sortable: true,
       width: "110px",
       textAlignment: "center" as const,
-      cellsStyle: () => ({
-        textAlign: "center" as const,
-        paddingLeft: 8,
-        paddingRight: 8,
-      }),
       render: (record: User) => (
         <Badge
-          style={{ paddingTop: 4 }}
           variant="light"
           radius="sm"
           size="sm"
@@ -156,11 +152,6 @@ export default function UsersTable({ loading }: { loading: boolean }) {
       title: "Acciones",
       width: 90,
       textAlignment: "center" as const,
-      cellsStyle: () => ({
-        textAlign: "center" as const,
-        paddingLeft: 8,
-        paddingRight: 8,
-      }),
       render: (record: User) => (
         <Group gap={6} wrap="nowrap" justify="center">
           <IconEye
@@ -183,7 +174,7 @@ export default function UsersTable({ loading }: { loading: boolean }) {
   ];
 
   return (
-    <Stack align="flex-start">
+    <Box style={{ flex: 1, minHeight: 0 }}>
       <Skeleton visible={loading}>
         <DataTable
           withTableBorder
@@ -193,14 +184,13 @@ export default function UsersTable({ loading }: { loading: boolean }) {
           columns={columns}
           sortStatus={sortStatus}
           onSortStatusChange={setSortStatus}
-          height="90vh"
-          style={{
-            width: "92vw",
-            borderRadius: "var(--mantine-radius-sm)",
-            tableLayout: "fixed",
+          noRecordsText="No se han encontrado usuarios"
+          height="calc(100vh - 100px)"
+          styles={{
+            table: { backgroundColor: "var(--mantine-color-dark-7)" },
           }}
         />
       </Skeleton>
-    </Stack>
+    </Box>
   );
 }

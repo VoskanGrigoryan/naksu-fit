@@ -76,7 +76,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
 
         <Stack justify="center">
           <Tooltip
-            label={"Cerrar sesión"}
+            label="Cerrar sesión"
             position="right"
             transitionProps={{ duration: 0 }}
           >
@@ -93,15 +93,19 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
           </Tooltip>
         </Stack>
       </AppShell.Navbar>
-      <AppShell.Main
-        style={{
-          padding: "var(--mantine-spacing-lg)",
-          backgroundColor: "var(--mantine-color-dark-6)",
-          marginLeft: "60px",
-        }}
-      >
-        {children}
-      </AppShell.Main>
+
+     <AppShell.Main
+  style={{
+    padding: "var(--mantine-spacing-lg)",
+    backgroundColor: "var(--mantine-color-dark-8)",
+    marginLeft: "60px",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden", // ← THIS IS REQUIRED
+  }}
+>
+  {children}
+</AppShell.Main>
     </AppShell>
   );
 };
