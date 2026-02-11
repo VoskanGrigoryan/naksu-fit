@@ -3,8 +3,8 @@ import { DataTable, type DataTableSortStatus } from "mantine-datatable";
 import sortBy from "lodash/sortBy";
 import { useMemo, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
-import { mockUsers } from "../../mocks/userTableData";
 import { useNavigate } from "react-router-dom";
+import { useUsersStore } from "../../store/usersStore";
 
 import { getUserColumns } from "./columns";
 
@@ -16,8 +16,9 @@ export default function UsersTable({
   reloading: boolean;
 }) {
   const navigate = useNavigate();
+  const { users } = useUsersStore();
 
-  type User = (typeof mockUsers)[number];
+  type User = typeof users[number];
 
   const [nameQuery, setNameQuery] = useState("");
   const [emailQuery, setEmailQuery] = useState("");
@@ -32,7 +33,7 @@ export default function UsersTable({
   });
 
   const filteredRecords = useMemo(() => {
-    return mockUsers.filter((u) => {
+    return users.filter((u) => {
       if (
         debouncedNameQuery &&
         !u.name.toLowerCase().includes(debouncedNameQuery.trim().toLowerCase())
@@ -49,13 +50,13 @@ export default function UsersTable({
 
       return true;
     });
-  }, [debouncedNameQuery, debouncedEmailQuery]);
+  }, [users, debouncedNameQuery, debouncedEmailQuery]);
 
   const records = useMemo(() => {
     if (!sortStatus.columnAccessor) return filteredRecords;
     const data = sortBy(
       filteredRecords,
-      sortStatus.columnAccessor as keyof User,
+      sortStatus.columnAccessor as keyof User
     ) as User[];
     return sortStatus.direction === "desc" ? data.reverse() : data;
   }, [filteredRecords, sortStatus]);

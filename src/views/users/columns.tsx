@@ -7,12 +7,12 @@ import {
   IconEye,
   IconTrash,
 } from "@tabler/icons-react";
-import { mockUsers } from "../../mocks/userTableData";
 import type { DataTableSortStatus } from "mantine-datatable";
 import type { Dispatch, SetStateAction } from "react";
 import styles from "./Users.module.css";
+import type { User } from "../../store/usersStore";
 
-type PaymentStatus = "paid" | "pending" | "overdue";
+export type PaymentStatus = "paid" | "pending" | "overdue";
 
 const paymentBadgeColor: Record<PaymentStatus, string> = {
   paid: "green",
@@ -25,8 +25,6 @@ const paymentLabel: Record<PaymentStatus, string> = {
   pending: "Pendiente",
   overdue: "Vencido",
 };
-
-type User = (typeof mockUsers)[number];
 
 interface ColumnsParams {
   nameQuery: string;
@@ -61,11 +59,7 @@ export function getUserColumns(params: ColumnsParams) {
           placeholder="Buscar nombre…"
           leftSection={<IconSearch size={16} />}
           rightSection={
-            <ActionIcon
-              size="sm"
-              variant="transparent"
-              onClick={() => setNameQuery("")}
-            >
+            <ActionIcon size="sm" variant="transparent" onClick={() => setNameQuery("")}>
               <IconX size={14} />
             </ActionIcon>
           }
@@ -87,11 +81,7 @@ export function getUserColumns(params: ColumnsParams) {
               setTimeout(() => setCopiedValue(null), 1500);
             }}
           >
-            {copiedValue === record.name ? (
-              <IconClipboardCheck size={20} />
-            ) : (
-              <IconClipboard size={20} />
-            )}
+            {copiedValue === record.name ? <IconClipboardCheck size={20} /> : <IconClipboard size={20} />}
           </ActionIcon>
         </Group>
       ),
@@ -105,11 +95,7 @@ export function getUserColumns(params: ColumnsParams) {
           placeholder="Buscar correo…"
           leftSection={<IconSearch size={16} />}
           rightSection={
-            <ActionIcon
-              size="sm"
-              variant="transparent"
-              onClick={() => setEmailQuery("")}
-            >
+            <ActionIcon size="sm" variant="transparent" onClick={() => setEmailQuery("")}>
               <IconX size={14} />
             </ActionIcon>
           }
@@ -131,22 +117,21 @@ export function getUserColumns(params: ColumnsParams) {
               setTimeout(() => setCopiedValue(null), 1500);
             }}
           >
-            {copiedValue === record.email ? (
-              <IconClipboardCheck size={20} />
-            ) : (
-              <IconClipboard size={20} />
-            )}
+            {copiedValue === record.email ? <IconClipboardCheck size={20} /> : <IconClipboard size={20} />}
           </ActionIcon>
         </Group>
       ),
     },
-    { accessor: "phone", title: "Celular" },
+    {
+      accessor: "phone",
+      title: "Celular",
+      render: (record: User) => record.phone ?? "-",
+    },
     {
       accessor: "birthday",
       title: "Nacimiento",
       sortable: true,
-      render: (record: User) =>
-        record.birthday ? record.birthday.toLocaleDateString("es-AR") : "-",
+      render: (record: User) => record.birthday?.toLocaleDateString("es-AR") ?? "-",
       sortAccessor: (record: User) => record.birthday?.getTime() ?? 0,
     },
     {
@@ -154,17 +139,17 @@ export function getUserColumns(params: ColumnsParams) {
       title: "Pago",
       sortable: true,
       width: "110px",
-      textAlignment: "center" as const,
+      textAlignment: "center",
       render: (record: User) => (
         <Badge
           variant="light"
           radius="sm"
           fullWidth
           size="sm"
-          color={paymentBadgeColor[record.paymentStatus as PaymentStatus]}
+          color={paymentBadgeColor[record.paymentStatus]}
           style={{ paddingTop: 4 }}
         >
-          {paymentLabel[record.paymentStatus as PaymentStatus]}
+          {paymentLabel[record.paymentStatus]}
         </Badge>
       ),
     },
@@ -173,14 +158,14 @@ export function getUserColumns(params: ColumnsParams) {
       title: "Estado",
       sortable: true,
       width: "90px",
-      textAlignment: "center" as const,
+      textAlignment: "center",
       render: (record: User) => (record.active ? "Activo" : "Inactivo"),
     },
     {
       accessor: "actions",
       title: "Acciones",
       width: 90,
-      textAlignment: "center" as const,
+      textAlignment: "center",
       render: (record: User) => (
         <Group gap={6} wrap="nowrap" justify="center">
           <IconEye

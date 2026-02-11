@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Paper, SimpleGrid } from "@mantine/core";
 
@@ -9,27 +9,19 @@ import UserInfoForm from "./UserInfoForm";
 import SectionActions, { type Section } from "../../components/ActionButtons";
 import CustomButton from "../../components/reusable/Button";
 import { IconArrowLeft } from "@tabler/icons-react";
-
-/* -------------------- types -------------------- */
+import type { UseFormReturn } from "react-hook-form";
+import type { UserInfoFormValues } from "../../schemas/userInfoSchema";
+import { useUsersStore } from "../../store/usersStore";
 
 type EditingSection = Section | null;
 
-/* -------------------- component -------------------- */
-
 const UserDetail = () => {
+  const { users, updateUser, setUsers } = useUsersStore();
   const { id } = useParams();
 
-  const users = mockUsers.map((u) => ({
-    ...u,
-    birthday: u.birthday ? new Date(u.birthday) : null,
-    lastActive: u.lastActive ? new Date(u.lastActive) : null,
-  }));
-
-  const user = users.find((u) => u.id === id);
-  if (!user) return <div>User not found</div>;
+  const userInfoFormRef = useRef<UseFormReturn<UserInfoFormValues>>(null);
 
   const [editingSection, setEditingSection] = useState<EditingSection>(null);
-
   const isEditingUserInfo = editingSection === "userInfo";
 
   const disabledInputStyles = {
@@ -39,17 +31,23 @@ const UserDetail = () => {
     },
   };
 
+  useEffect(() => {
+    if (users.length === 0) setUsers(mockUsers);
+  }, []);
+
+  const user = users.find((u) => u.id === id);
+  if (!user) return <div>User not found</div>;
+
+  // Wrapper function with no arguments for SectionActions
   const handleUserInfoSave = () => {
-    // TODO: implement save logic
-    console.log("Saving user info...");
+    userInfoFormRef.current?.handleSubmit((values) => {
+      updateUser(id!, values);
+    })();
   };
 
   const handleUserPlanSave = () => {
-    // TODO: implement save logic
     console.log("Saving user plan...");
   };
-
-  
 
   return (
     <MainLayout>
@@ -57,12 +55,11 @@ const UserDetail = () => {
         onClick={() => window.history.back()}
         w="fit-content"
         variant="light"
-        rightSection={
-          <IconArrowLeft size={24} stroke={1.5} style={{ paddingBottom: 4 }} />
-        }
+        rightSection={<IconArrowLeft size={24} stroke={1.5} style={{ paddingBottom: 4 }} />}
       >
         Grilla de usuarios
       </CustomButton>
+
       <SimpleGrid
         cols={{ base: 1 }}
         style={{ width: "calc(100% - 48px)", margin: "0", marginTop: 20 }}
@@ -78,9 +75,11 @@ const UserDetail = () => {
           />
 
           <UserInfoForm
-            isEditingUserInfo={isEditingUserInfo}
+            ref={userInfoFormRef}
+            isEditing={isEditingUserInfo}
             disabledInputStyles={disabledInputStyles}
-            user={user}
+            defaultValues={user}
+            onSubmit={(values) => updateUser(id!, values)}
           />
         </div>
 
