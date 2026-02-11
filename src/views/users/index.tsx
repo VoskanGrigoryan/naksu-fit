@@ -10,28 +10,38 @@ import {
   IconUpload,
 } from "@tabler/icons-react";
 
+import { useUsersStore } from "../../store/usersStore";
+import { mockUsers } from "../../mocks/userTableData";
+
 const Users = () => {
+  const { users, setUsers } = useUsersStore();
+
   const [initialLoading, setInitialLoading] = useState(true);
   const [reloading, setReloading] = useState(false);
 
+  // Load mock data once
   useEffect(() => {
+    if (users.length === 0) {
+      setUsers(mockUsers);
+    }
+
     const t = setTimeout(() => setInitialLoading(false), 800);
     return () => clearTimeout(t);
-  }, []);
+  }, [users.length, setUsers]);
 
   const handleReload = () => {
     setReloading(true);
-    setTimeout(() => setReloading(false), 800);
+
+    setTimeout(() => {
+      setUsers([...users]);
+      setReloading(false);
+    }, 800);
   };
 
   return (
     <MainLayout>
       <Stack style={{ flex: 1 }} gap="sm">
-        <Group
-          style={{
-            marginBottom: 8,
-          }}
-        >
+        <Group style={{ marginBottom: 8 }}>
           <CustomButton
             loading={initialLoading}
             rightSection={
@@ -81,7 +91,7 @@ const Users = () => {
         </Group>
 
         <Box style={{ flex: 1, position: "relative" }}>
-          <UsersTable loading={initialLoading} reloading={reloading}/>
+          <UsersTable loading={initialLoading} reloading={reloading} />
         </Box>
       </Stack>
     </MainLayout>
