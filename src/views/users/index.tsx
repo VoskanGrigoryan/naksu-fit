@@ -1,4 +1,4 @@
-import { Group, Stack, Box, LoadingOverlay } from "@mantine/core";
+import { Group, Stack, Box } from "@mantine/core";
 import { useEffect, useState } from "react";
 import MainLayout from "../../layouts/main/MainLayout";
 import UsersTable from "./UsersTable";
@@ -29,14 +29,11 @@ const Users = () => {
       <Stack style={{ flex: 1 }} gap="sm">
         <Group
           style={{
-            backgroundColor: "var(--mantine-color-dark-7)",
-            padding: 8,
-            borderRadius: 4,
-            width: "100%",
-            flexShrink: 0,
+            marginBottom: 8,
           }}
         >
           <CustomButton
+            loading={initialLoading}
             rightSection={
               <IconPlus size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
             }
@@ -45,6 +42,7 @@ const Users = () => {
           </CustomButton>
 
           <CustomButton
+            loading={initialLoading}
             variant="outline"
             rightSection={
               <IconDownload
@@ -58,27 +56,23 @@ const Users = () => {
           </CustomButton>
 
           <CustomButton
+            loading={initialLoading}
             variant="outline"
             rightSection={
-              <IconUpload
-                size={20}
-                stroke={1.5}
-                style={{ paddingBottom: 4 }}
-              />
+              <IconUpload size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
             }
           >
             Exportar usuarios
           </CustomButton>
 
           <CustomButton
+            withProgress
+            progressDuration={500}
+            loading={initialLoading}
             variant="outline"
             color="green"
             rightSection={
-              <IconReload
-                size={20}
-                stroke={1.5}
-                style={{ paddingBottom: 4 }}
-              />
+              <IconReload size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
             }
             onClick={handleReload}
           >
@@ -87,8 +81,7 @@ const Users = () => {
         </Group>
 
         <Box style={{ flex: 1, position: "relative" }}>
-          <LoadingOverlay visible={reloading} />
-          <UsersTable loading={initialLoading} />
+          <UsersTable loading={initialLoading} reloading={reloading}/>
         </Box>
       </Stack>
     </MainLayout>

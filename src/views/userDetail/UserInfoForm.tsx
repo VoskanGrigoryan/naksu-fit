@@ -1,6 +1,6 @@
 import { Group, NumberInput, Paper, Stack, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { IconCalendar } from "@tabler/icons-react";
+import { IconCalendar, IconMail, IconPhone, IconUser } from "@tabler/icons-react";
 
 const UserInfoForm = ({
   isEditingUserInfo,
@@ -19,7 +19,8 @@ const UserInfoForm = ({
             disabled={!isEditingUserInfo}
             styles={disabledInputStyles}
             style={{ minWidth: 250 }}
-            size="md"
+            leftSection={<IconUser size={18} stroke={1.5} />}
+            size="sm"
             label="Nombre"
             value={user.name}
           />
@@ -28,7 +29,8 @@ const UserInfoForm = ({
             disabled={!isEditingUserInfo}
             styles={disabledInputStyles}
             style={{ minWidth: 250 }}
-            size="md"
+            leftSection={<IconMail size={18} stroke={1.5} />}
+            size="sm"
             label="Email"
             value={user.email}
           />
@@ -37,16 +39,18 @@ const UserInfoForm = ({
             disabled={!isEditingUserInfo}
             styles={disabledInputStyles}
             style={{ minWidth: 250 }}
-            size="md"
+            leftSection={<IconPhone size={18} stroke={1.5} />}
+            size="sm"
             label="Teléfono"
             value={user.phone}
           />
 
           <DatePickerInput
+            size="sm"
             disabled={!isEditingUserInfo}
             styles={disabledInputStyles}
             style={{ minWidth: 250 }}
-            valueFormat="MMMM d yyyy"
+            valueFormat="DD/MM/YYYY"
             leftSection={<IconCalendar size={18} stroke={1.5} />}
             leftSectionPointerEvents="none"
             label="Fecha de nacimiento"

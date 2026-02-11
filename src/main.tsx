@@ -11,10 +11,33 @@ import "mantine-datatable/styles.layer.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <MantineProvider defaultColorScheme="dark">
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+    <MantineProvider
+      defaultColorScheme="dark"
+      theme={{
+        components: {
+          Input: {
+            styles: {
+              input: {
+                paddingTop: 4,
+              },
+            },
+          },
+          Table: {
+            styles: {
+              th: {
+                paddingBottom: 4,
+              },
+              td: {
+                paddingBottom: 4,
+              },
+            },
+          },
+        },
+      }}
+    >
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </MantineProvider>
   </StrictMode>,
 );

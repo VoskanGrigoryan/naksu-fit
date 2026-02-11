@@ -1,5 +1,6 @@
 import { Group, Title } from "@mantine/core";
 import CustomButton from "./reusable/Button";
+import { IconCancel, IconCheck, IconEdit } from "@tabler/icons-react";
 
 /* -------------------- types -------------------- */
 
@@ -38,6 +39,13 @@ const SectionActions = ({
 
       <Group style={{ marginBottom: 12 }}>
         <CustomButton
+         rightSection={
+          
+            !isEditing ? (
+              <IconEdit size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
+            ) : (
+              <IconCheck size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
+  )}
           disabled={isOtherEditing}
           color={!isEditing ? "blue" : "green"}
           onClick={handlePrimaryAction}
@@ -47,7 +55,11 @@ const SectionActions = ({
 
         {isEditing && (
           <CustomButton
-            variant="outline"
+          color="var(--mantine-color-red-4)"
+           rightSection={
+              <IconCancel size={20} stroke={1.5} style={{ paddingBottom: 4 }} />
+            }
+            variant="light"
             onClick={() => setEditingSection(null)}
           >
             Cancelar

@@ -94,18 +94,18 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
         </Stack>
       </AppShell.Navbar>
 
-     <AppShell.Main
-  style={{
-    padding: "var(--mantine-spacing-lg)",
-    backgroundColor: "var(--mantine-color-dark-8)",
-    marginLeft: "60px",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden", // ← THIS IS REQUIRED
-  }}
->
-  {children}
-</AppShell.Main>
+      <AppShell.Main
+        style={{
+          padding: "var(--mantine-spacing-xl)",
+          backgroundColor: "var(--mantine-color-dark-8)",
+          marginLeft: "60px",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        {children}
+      </AppShell.Main>
     </AppShell>
   );
 };

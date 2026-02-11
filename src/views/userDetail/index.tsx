@@ -7,6 +7,8 @@ import { mockUsers } from "../../mocks/userTableData";
 
 import UserInfoForm from "./UserInfoForm";
 import SectionActions, { type Section } from "../../components/ActionButtons";
+import CustomButton from "../../components/reusable/Button";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 /* -------------------- types -------------------- */
 
@@ -47,11 +49,23 @@ const UserDetail = () => {
     console.log("Saving user plan...");
   };
 
+  
+
   return (
     <MainLayout>
+      <CustomButton
+        onClick={() => window.history.back()}
+        w="fit-content"
+        variant="light"
+        rightSection={
+          <IconArrowLeft size={24} stroke={1.5} style={{ paddingBottom: 4 }} />
+        }
+      >
+        Grilla de usuarios
+      </CustomButton>
       <SimpleGrid
         cols={{ base: 1 }}
-        style={{ width: "calc(100% - 48px)", margin: "0 auto" }}
+        style={{ width: "calc(100% - 48px)", margin: "0", marginTop: 20 }}
       >
         {/* User basic info */}
         <div>
