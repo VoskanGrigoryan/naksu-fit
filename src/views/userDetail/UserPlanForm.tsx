@@ -1,10 +1,6 @@
-import { Group, NumberInput, Paper, Stack, TextInput } from "@mantine/core";
-import { DatePickerInput } from "@mantine/dates";
-import { IconCalendar } from "@tabler/icons-react";
+import { Group, Paper, Stack } from "@mantine/core";
 
 const UserPlanForm = ({
-  isEditingUserPlan,
-  disabledInputStyles,
   user,
 }: {
   isEditingUserPlan: boolean;

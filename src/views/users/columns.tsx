@@ -1,23 +1,22 @@
 import { ActionIcon, Badge, Group, TextInput } from "@mantine/core";
 import {
-  IconClipboard,
   IconClipboardCheck,
   IconSearch,
   IconX,
   IconEye,
   IconTrash,
+  IconCopy,
 } from "@tabler/icons-react";
 import type { DataTableSortStatus } from "mantine-datatable";
 import type { Dispatch, SetStateAction } from "react";
-import styles from "./Users.module.css";
 import type { User } from "../../store/usersStore";
 
 export type PaymentStatus = "paid" | "pending" | "overdue";
 
 const paymentBadgeColor: Record<PaymentStatus, string> = {
-  paid: "green",
-  pending: "yellow",
-  overdue: "red",
+  paid: "green.5",
+  pending: "yellow.5",
+  overdue: "red.5",
 };
 
 const paymentLabel: Record<PaymentStatus, string> = {
@@ -59,7 +58,11 @@ export function getUserColumns(params: ColumnsParams) {
           placeholder="Buscar nombre…"
           leftSection={<IconSearch size={16} />}
           rightSection={
-            <ActionIcon size="sm" variant="transparent" onClick={() => setNameQuery("")}>
+            <ActionIcon
+              size="sm"
+              variant="transparent"
+              onClick={() => setNameQuery("")}
+            >
               <IconX size={14} />
             </ActionIcon>
           }
@@ -74,14 +77,18 @@ export function getUserColumns(params: ColumnsParams) {
           <ActionIcon
             size="sm"
             variant="transparent"
-            color={copiedValue === record.name ? "green" : undefined}
+            color={copiedValue === record.name ? "green" : "gray.6"}
             onClick={() => {
               navigator.clipboard.writeText(record.name);
               setCopiedValue(record.name);
               setTimeout(() => setCopiedValue(null), 1500);
             }}
           >
-            {copiedValue === record.name ? <IconClipboardCheck size={20} /> : <IconClipboard size={20} />}
+            {copiedValue === record.name ? (
+              <IconClipboardCheck size={20} />
+            ) : (
+              <IconCopy size={20} />
+            )}
           </ActionIcon>
         </Group>
       ),
@@ -95,7 +102,11 @@ export function getUserColumns(params: ColumnsParams) {
           placeholder="Buscar correo…"
           leftSection={<IconSearch size={16} />}
           rightSection={
-            <ActionIcon size="sm" variant="transparent" onClick={() => setEmailQuery("")}>
+            <ActionIcon
+              size="sm"
+              variant="transparent"
+              onClick={() => setEmailQuery("")}
+            >
               <IconX size={14} />
             </ActionIcon>
           }
@@ -110,14 +121,18 @@ export function getUserColumns(params: ColumnsParams) {
           <ActionIcon
             size="sm"
             variant="transparent"
-            color={copiedValue === record.email ? "green" : undefined}
+            color={copiedValue === record.email ? "green" : "gray.6"}
             onClick={() => {
               navigator.clipboard.writeText(record.email);
               setCopiedValue(record.email);
               setTimeout(() => setCopiedValue(null), 1500);
             }}
           >
-            {copiedValue === record.email ? <IconClipboardCheck size={20} /> : <IconClipboard size={20} />}
+            {copiedValue === record.email ? (
+              <IconClipboardCheck size={20} />
+            ) : (
+              <IconCopy size={20} />
+            )}
           </ActionIcon>
         </Group>
       ),
@@ -131,7 +146,8 @@ export function getUserColumns(params: ColumnsParams) {
       accessor: "birthday",
       title: "Nacimiento",
       sortable: true,
-      render: (record: User) => record.birthday?.toLocaleDateString("es-AR") ?? "-",
+      render: (record: User) =>
+        record.birthday?.toLocaleDateString("es-AR") ?? "-",
       sortAccessor: (record: User) => record.birthday?.getTime() ?? 0,
     },
     {
@@ -142,7 +158,7 @@ export function getUserColumns(params: ColumnsParams) {
       textAlignment: "center",
       render: (record: User) => (
         <Badge
-          variant="light"
+          variant="filled"
           radius="sm"
           fullWidth
           size="sm"
@@ -167,12 +183,26 @@ export function getUserColumns(params: ColumnsParams) {
       width: 90,
       textAlignment: "center",
       render: (record: User) => (
-        <Group gap={6} wrap="nowrap" justify="center">
+        <Group
+          gap={8}
+          wrap="nowrap"
+          justify="center"
+          style={{
+            opacity: 0.9,
+            transition: "opacity 150ms ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = "1";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = "0.9";
+          }}
+        >
           <IconEye
             size={20}
             stroke={1.5}
-            color="var(--mantine-color-blue-6)"
-            className={styles.icon}
+            style={{ cursor: "pointer" }}
+            color="var(--mantine-color-gray-6)"
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/user/${record.id}`);
@@ -181,8 +211,8 @@ export function getUserColumns(params: ColumnsParams) {
           <IconTrash
             size={20}
             stroke={1.5}
-            color="var(--mantine-color-red-5)"
-            className={styles.icon}
+            style={{ cursor: "pointer" }}
+            color="var(--mantine-color-gray-6)"
           />
         </Group>
       ),

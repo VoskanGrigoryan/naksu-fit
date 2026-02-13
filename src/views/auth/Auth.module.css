@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: var(--mantine-color-dark-8);
 }
 
 .logoContainer {
