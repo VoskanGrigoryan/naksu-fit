@@ -4,14 +4,14 @@ import { IconCancel, IconCheck, IconEdit } from "@tabler/icons-react";
 
 /* -------------------- types -------------------- */
 
-export type Section = "userInfo" | "userPlan";
+export type Section = "userInfo" | "userPlan" | "additionalInfo";
 
 type SectionActionsProps = {
   title: string;
   section: Section;
   editingSection: Section | null;
   setEditingSection: (section: Section | null) => void;
-  onSave?: () => void; // must remain 0-args
+  onSave?: () => void; 
 };
 
 const SectionActions = ({
@@ -35,7 +35,7 @@ const SectionActions = ({
 
   return (
     <Group justify="space-between">
-      <Title order={2}>{title}</Title>
+      <Title order={2} fw={500}>{title}</Title>
 
       <Group style={{ marginBottom: 12 }}>
         <CustomButton
@@ -55,9 +55,9 @@ const SectionActions = ({
 
         {isEditing && (
           <CustomButton
-            color="var(--mantine-color-red-4)"
+            color="var(--mantine-color-red-6)"
             rightSection={<IconCancel size={20} stroke={1.5} style={{ paddingBottom: 4 }} />}
-            variant="light"
+            variant="filled"
             onClick={() => setEditingSection(null)}
           >
             Cancelar

@@ -3,8 +3,16 @@ import { Controller, useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Group, Paper, Stack, TextInput } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
-import { IconCalendar, IconMail, IconPhone, IconUser } from "@tabler/icons-react";
-import { userInfoSchema, type UserInfoFormValues } from "../../schemas/userInfoSchema";
+import {
+  IconCalendar,
+  IconMail,
+  IconPhone,
+  IconUser,
+} from "@tabler/icons-react";
+import {
+  userInfoSchema,
+  type UserInfoFormValues,
+} from "../../schemas/userInfoSchema";
 
 type Props = {
   isEditing: boolean;
@@ -23,7 +31,12 @@ const UserInfoForm = forwardRef<UseFormReturn<UserInfoFormValues>, Props>(
     useImperativeHandle(ref, () => form);
 
     return (
-      <Paper shadow="lg" withBorder p="lg">
+      <Paper
+        shadow={isEditing ? "lg" : "sm"}
+        withBorder
+        p="lg"
+        style={{ transition: "box-shadow 150ms ease" }}
+      >
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Stack>
             <Group>
@@ -37,7 +50,7 @@ const UserInfoForm = forwardRef<UseFormReturn<UserInfoFormValues>, Props>(
                     styles={disabledInputStyles}
                     style={{ minWidth: 250 }}
                     leftSection={<IconUser size={18} stroke={1.5} />}
-                    size="sm"
+                    size="md"
                     label="Nombre"
                   />
                 )}
@@ -53,7 +66,7 @@ const UserInfoForm = forwardRef<UseFormReturn<UserInfoFormValues>, Props>(
                     styles={disabledInputStyles}
                     style={{ minWidth: 250 }}
                     leftSection={<IconMail size={18} stroke={1.5} />}
-                    size="sm"
+                    size="md"
                     label="Email"
                   />
                 )}
@@ -69,7 +82,7 @@ const UserInfoForm = forwardRef<UseFormReturn<UserInfoFormValues>, Props>(
                     styles={disabledInputStyles}
                     style={{ minWidth: 250 }}
                     leftSection={<IconPhone size={18} stroke={1.5} />}
-                    size="sm"
+                    size="md"
                     label="Teléfono"
                   />
                 )}
@@ -81,7 +94,7 @@ const UserInfoForm = forwardRef<UseFormReturn<UserInfoFormValues>, Props>(
                 render={({ field }) => (
                   <DatePickerInput
                     {...field}
-                    size="sm"
+                    size="md"
                     disabled={!isEditing}
                     styles={disabledInputStyles}
                     style={{ minWidth: 250 }}
@@ -97,7 +110,7 @@ const UserInfoForm = forwardRef<UseFormReturn<UserInfoFormValues>, Props>(
         </form>
       </Paper>
     );
-  }
+  },
 );
 
 export default UserInfoForm;

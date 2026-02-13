@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Group, TextInput } from "@mantine/core";
+import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
   IconClipboardCheck,
   IconSearch,
@@ -10,6 +10,7 @@ import {
 import type { DataTableSortStatus } from "mantine-datatable";
 import type { Dispatch, SetStateAction } from "react";
 import type { User } from "../../store/usersStore";
+import { getPaymentStatus } from "../../utils/helpers/getPaymentStatus";
 
 export type PaymentStatus = "paid" | "pending" | "overdue";
 
@@ -37,6 +38,16 @@ interface ColumnsParams {
   setSortStatus: Dispatch<SetStateAction<DataTableSortStatus<User>>>;
 }
 
+const classMeta: Record<string, { initials: string; label: string }> = {
+  muay_thai: { initials: "MT", label: "Muay Thai" },
+  sipalki_do: { initials: "SD", label: "Sipalki Do" },
+  competidores: { initials: "CO", label: "Competidores" },
+  kick_boxing: { initials: "KB", label: "Kick Boxing" },
+  boxeo: { initials: "BX", label: "Boxeo" },
+  boxeo_comp_thai: { initials: "BCT", label: "Boxeo Comp. Thai" },
+  yoga: { initials: "YG", label: "Yoga" },
+};
+
 export function getUserColumns(params: ColumnsParams) {
   const {
     nameQuery,
@@ -53,6 +64,7 @@ export function getUserColumns(params: ColumnsParams) {
       accessor: "name",
       title: "Nombre",
       sortable: true,
+      width: "20%",
       filter: (
         <TextInput
           placeholder="Buscar nombre…"
@@ -97,6 +109,7 @@ export function getUserColumns(params: ColumnsParams) {
       accessor: "email",
       title: "Correo",
       sortable: true,
+      width: "30%",
       filter: (
         <TextInput
           placeholder="Buscar correo…"
@@ -140,12 +153,14 @@ export function getUserColumns(params: ColumnsParams) {
     {
       accessor: "phone",
       title: "Celular",
+      width: "10%",
       render: (record: User) => record.phone ?? "-",
     },
     {
       accessor: "birthday",
       title: "Nacimiento",
       sortable: true,
+      width: "10%",
       render: (record: User) =>
         record.birthday?.toLocaleDateString("es-AR") ?? "-",
       sortAccessor: (record: User) => record.birthday?.getTime() ?? 0,
@@ -154,33 +169,59 @@ export function getUserColumns(params: ColumnsParams) {
       accessor: "paymentStatus",
       title: "Pago",
       sortable: true,
-      width: "110px",
+      width: "10%",
       textAlignment: "center",
-      render: (record: User) => (
-        <Badge
-          variant="filled"
-          radius="sm"
-          fullWidth
-          size="sm"
-          color={paymentBadgeColor[record.paymentStatus]}
-          style={{ paddingTop: 4 }}
-        >
-          {paymentLabel[record.paymentStatus]}
-        </Badge>
-      ),
+      render: (record: User) => {
+        const status = getPaymentStatus(record);
+
+        return (
+          <Badge
+            variant="filled"
+            radius="sm"
+            fullWidth
+            size="sm"
+            color={paymentBadgeColor[status]}
+            style={{ paddingTop: 4 }}
+          >
+            {paymentLabel[status]}
+          </Badge>
+        );
+      },
     },
     {
-      accessor: "active",
-      title: "Estado",
-      sortable: true,
-      width: "90px",
+      accessor: "classes",
+      title: "Clases",
+      width: "14%",
       textAlignment: "center",
-      render: (record: User) => (record.active ? "Activo" : "Inactivo"),
+      render: (record: User) => {
+        if (!record.classes?.length) return "-";
+
+        return (
+          <Group gap={4} justify="start" align="start">
+            {record.classes.map((c, index) => {
+              const meta = classMeta[c.classType];
+
+              return (
+                <Tooltip key={index} label={meta?.label ?? c.classType}>
+                  <Badge
+                    size="xs"
+                    radius="sm"
+                    variant="light"
+                    style={{ paddingTop: 4 }}
+                  >
+                    {meta?.initials ?? "?"}
+                  </Badge>
+                </Tooltip>
+              );
+            })}
+          </Group>
+        );
+      },
     },
     {
       accessor: "actions",
       title: "Acciones",
-      width: 90,
+      width: "6%",
       textAlignment: "center",
       render: (record: User) => (
         <Group
