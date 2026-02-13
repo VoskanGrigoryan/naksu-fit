@@ -1,23 +1,23 @@
-import { ActionIcon, Badge, Group, TextInput } from "@mantine/core";
+import { ActionIcon, Badge, Group, TextInput, Tooltip } from "@mantine/core";
 import {
-  IconClipboard,
   IconClipboardCheck,
   IconSearch,
   IconX,
   IconEye,
   IconTrash,
+  IconCopy,
 } from "@tabler/icons-react";
-import { mockUsers } from "../../mocks/userTableData";
 import type { DataTableSortStatus } from "mantine-datatable";
 import type { Dispatch, SetStateAction } from "react";
-import styles from "./Users.module.css";
+import type { User } from "../../store/usersStore";
+import { getPaymentStatus } from "../../utils/helpers/getPaymentStatus";
 
-type PaymentStatus = "paid" | "pending" | "overdue";
+export type PaymentStatus = "paid" | "pending" | "overdue";
 
 const paymentBadgeColor: Record<PaymentStatus, string> = {
-  paid: "green",
-  pending: "yellow",
-  overdue: "red",
+  paid: "green.5",
+  pending: "yellow.5",
+  overdue: "red.5",
 };
 
 const paymentLabel: Record<PaymentStatus, string> = {
@@ -25,8 +25,6 @@ const paymentLabel: Record<PaymentStatus, string> = {
   pending: "Pendiente",
   overdue: "Vencido",
 };
-
-type User = (typeof mockUsers)[number];
 
 interface ColumnsParams {
   nameQuery: string;
@@ -39,6 +37,16 @@ interface ColumnsParams {
   sortStatus: DataTableSortStatus<User>;
   setSortStatus: Dispatch<SetStateAction<DataTableSortStatus<User>>>;
 }
+
+const classMeta: Record<string, { initials: string; label: string }> = {
+  muay_thai: { initials: "MT", label: "Muay Thai" },
+  sipalki_do: { initials: "SD", label: "Sipalki Do" },
+  competidores: { initials: "CO", label: "Competidores" },
+  kick_boxing: { initials: "KB", label: "Kick Boxing" },
+  boxeo: { initials: "BX", label: "Boxeo" },
+  boxeo_comp_thai: { initials: "BCT", label: "Boxeo Comp. Thai" },
+  yoga: { initials: "YG", label: "Yoga" },
+};
 
 export function getUserColumns(params: ColumnsParams) {
   const {
@@ -56,6 +64,7 @@ export function getUserColumns(params: ColumnsParams) {
       accessor: "name",
       title: "Nombre",
       sortable: true,
+      width: "20%",
       filter: (
         <TextInput
           placeholder="Buscar nombre…"
@@ -80,7 +89,7 @@ export function getUserColumns(params: ColumnsParams) {
           <ActionIcon
             size="sm"
             variant="transparent"
-            color={copiedValue === record.name ? "green" : undefined}
+            color={copiedValue === record.name ? "green" : "gray.6"}
             onClick={() => {
               navigator.clipboard.writeText(record.name);
               setCopiedValue(record.name);
@@ -90,7 +99,7 @@ export function getUserColumns(params: ColumnsParams) {
             {copiedValue === record.name ? (
               <IconClipboardCheck size={20} />
             ) : (
-              <IconClipboard size={20} />
+              <IconCopy size={20} />
             )}
           </ActionIcon>
         </Group>
@@ -100,6 +109,7 @@ export function getUserColumns(params: ColumnsParams) {
       accessor: "email",
       title: "Correo",
       sortable: true,
+      width: "30%",
       filter: (
         <TextInput
           placeholder="Buscar correo…"
@@ -124,7 +134,7 @@ export function getUserColumns(params: ColumnsParams) {
           <ActionIcon
             size="sm"
             variant="transparent"
-            color={copiedValue === record.email ? "green" : undefined}
+            color={copiedValue === record.email ? "green" : "gray.6"}
             onClick={() => {
               navigator.clipboard.writeText(record.email);
               setCopiedValue(record.email);
@@ -134,60 +144,106 @@ export function getUserColumns(params: ColumnsParams) {
             {copiedValue === record.email ? (
               <IconClipboardCheck size={20} />
             ) : (
-              <IconClipboard size={20} />
+              <IconCopy size={20} />
             )}
           </ActionIcon>
         </Group>
       ),
     },
-    { accessor: "phone", title: "Celular" },
+    {
+      accessor: "phone",
+      title: "Celular",
+      width: "10%",
+      render: (record: User) => record.phone ?? "-",
+    },
     {
       accessor: "birthday",
       title: "Nacimiento",
       sortable: true,
+      width: "10%",
       render: (record: User) =>
-        record.birthday ? record.birthday.toLocaleDateString("es-AR") : "-",
+        record.birthday?.toLocaleDateString("es-AR") ?? "-",
       sortAccessor: (record: User) => record.birthday?.getTime() ?? 0,
     },
     {
       accessor: "paymentStatus",
       title: "Pago",
       sortable: true,
-      width: "110px",
-      textAlignment: "center" as const,
-      render: (record: User) => (
-        <Badge
-          variant="light"
-          radius="sm"
-          fullWidth
-          size="sm"
-          color={paymentBadgeColor[record.paymentStatus as PaymentStatus]}
-          style={{ paddingTop: 4 }}
-        >
-          {paymentLabel[record.paymentStatus as PaymentStatus]}
-        </Badge>
-      ),
+      width: "10%",
+      textAlignment: "center",
+      render: (record: User) => {
+        const status = getPaymentStatus(record);
+
+        return (
+          <Badge
+            variant="filled"
+            radius="sm"
+            fullWidth
+            size="sm"
+            color={paymentBadgeColor[status]}
+            style={{ paddingTop: 4 }}
+          >
+            {paymentLabel[status]}
+          </Badge>
+        );
+      },
     },
     {
-      accessor: "active",
-      title: "Estado",
-      sortable: true,
-      width: "90px",
-      textAlignment: "center" as const,
-      render: (record: User) => (record.active ? "Activo" : "Inactivo"),
+      accessor: "classes",
+      title: "Clases",
+      width: "14%",
+      textAlignment: "center",
+      render: (record: User) => {
+        if (!record.classes?.length) return "-";
+
+        return (
+          <Group gap={4} justify="start" align="start">
+            {record.classes.map((c, index) => {
+              const meta = classMeta[c.classType];
+
+              return (
+                <Tooltip key={index} label={meta?.label ?? c.classType}>
+                  <Badge
+                    size="xs"
+                    radius="sm"
+                    variant="light"
+                    style={{ paddingTop: 4 }}
+                  >
+                    {meta?.initials ?? "?"}
+                  </Badge>
+                </Tooltip>
+              );
+            })}
+          </Group>
+        );
+      },
     },
     {
       accessor: "actions",
       title: "Acciones",
-      width: 90,
-      textAlignment: "center" as const,
+      width: "6%",
+      textAlignment: "center",
       render: (record: User) => (
-        <Group gap={6} wrap="nowrap" justify="center">
+        <Group
+          gap={8}
+          wrap="nowrap"
+          justify="center"
+          style={{
+            opacity: 0.9,
+            transition: "opacity 150ms ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.opacity = "1";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.opacity = "0.9";
+          }}
+        >
           <IconEye
             size={20}
             stroke={1.5}
-            color="var(--mantine-color-blue-6)"
-            className={styles.icon}
+            style={{ cursor: "pointer" }}
+            color="var(--mantine-color-gray-6)"
             onClick={(e) => {
               e.stopPropagation();
               navigate(`/user/${record.id}`);
@@ -196,8 +252,8 @@ export function getUserColumns(params: ColumnsParams) {
           <IconTrash
             size={20}
             stroke={1.5}
-            color="var(--mantine-color-red-5)"
-            className={styles.icon}
+            style={{ cursor: "pointer" }}
+            color="var(--mantine-color-gray-6)"
           />
         </Group>
       ),

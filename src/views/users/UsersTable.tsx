@@ -1,10 +1,10 @@
-import { Box } from "@mantine/core";
+import { Box, Paper } from "@mantine/core";
 import { DataTable, type DataTableSortStatus } from "mantine-datatable";
 import sortBy from "lodash/sortBy";
 import { useMemo, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
-import { mockUsers } from "../../mocks/userTableData";
 import { useNavigate } from "react-router-dom";
+import { useUsersStore } from "../../store/usersStore";
 
 import { getUserColumns } from "./columns";
 
@@ -16,8 +16,9 @@ export default function UsersTable({
   reloading: boolean;
 }) {
   const navigate = useNavigate();
+  const { users } = useUsersStore();
 
-  type User = (typeof mockUsers)[number];
+  type User = (typeof users)[number];
 
   const [nameQuery, setNameQuery] = useState("");
   const [emailQuery, setEmailQuery] = useState("");
@@ -32,7 +33,7 @@ export default function UsersTable({
   });
 
   const filteredRecords = useMemo(() => {
-    return mockUsers.filter((u) => {
+    return users.filter((u) => {
       if (
         debouncedNameQuery &&
         !u.name.toLowerCase().includes(debouncedNameQuery.trim().toLowerCase())
@@ -49,7 +50,7 @@ export default function UsersTable({
 
       return true;
     });
-  }, [debouncedNameQuery, debouncedEmailQuery]);
+  }, [users, debouncedNameQuery, debouncedEmailQuery]);
 
   const records = useMemo(() => {
     if (!sortStatus.columnAccessor) return filteredRecords;
@@ -74,26 +75,29 @@ export default function UsersTable({
 
   return (
     <Box style={{ flex: 1, minHeight: 0 }}>
-      <DataTable
-        fetching={loading || reloading}
-        withTableBorder
-        withColumnBorders
-        highlightOnHover
-        loaderType="oval"
-        loaderSize="lg"
-        loaderColor="blue"
-        loaderBackgroundBlur={4}
-        records={records}
-        columns={columns}
-        sortStatus={sortStatus}
-        onSortStatusChange={setSortStatus}
-        noRecordsText="No se han encontrado usuarios"
-        height="calc(100vh - 120px)"
-        styles={{
-          table: { backgroundColor: "var(--mantine-color-dark-7)" },
-          header: { backgroundColor: "var(--mantine-color-dark-6)" },
-        }}
-      />
+      <Paper radius="md" shadow="lg" style={{ height: "calc(100vh - 120px)" }}>
+        <DataTable
+          fetching={loading || reloading}
+          withTableBorder
+          highlightOnHover
+          loaderType="oval"
+          verticalSpacing="sm"
+          loaderSize="lg"
+          loaderColor="blue"
+          loaderBackgroundBlur={4}
+          records={records}
+          columns={columns}
+          sortStatus={sortStatus}
+          onSortStatusChange={setSortStatus}
+          noRecordsText="No se han encontrado usuarios"
+          height="calc(100vh - 120px)"
+          style={{ borderRadius: 4 }}
+          styles={{
+            table: { backgroundColor: "var(--mantine-color-gray-0)" },
+            header: { backgroundColor: "var(--mantine-color-gray-4)" },
+          }}
+        />
+      </Paper>
     </Box>
   );
 }

@@ -1,55 +1,61 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Paper, SimpleGrid } from "@mantine/core";
+import { SimpleGrid } from "@mantine/core";
 
 import MainLayout from "../../layouts/main/MainLayout";
 import { mockUsers } from "../../mocks/userTableData";
 
 import UserInfoForm from "./UserInfoForm";
+import UserPlanForm from "./UserPlanForm";
 import SectionActions, { type Section } from "../../components/ActionButtons";
 import CustomButton from "../../components/reusable/Button";
 import { IconArrowLeft } from "@tabler/icons-react";
 
-/* -------------------- types -------------------- */
+import type { UseFormReturn } from "react-hook-form";
+import type { UserInfoFormValues } from "../../schemas/userInfoSchema";
+import type { UserPlanFormValues } from "../../schemas/userPlanSchema";
+
+import { useUsersStore } from "../../store/usersStore";
 
 type EditingSection = Section | null;
 
-/* -------------------- component -------------------- */
-
 const UserDetail = () => {
+  const { users, updateUser, setUsers } = useUsersStore();
   const { id } = useParams();
 
-  const users = mockUsers.map((u) => ({
-    ...u,
-    birthday: u.birthday ? new Date(u.birthday) : null,
-    lastActive: u.lastActive ? new Date(u.lastActive) : null,
-  }));
-
-  const user = users.find((u) => u.id === id);
-  if (!user) return <div>User not found</div>;
+  const userInfoFormRef = useRef<UseFormReturn<UserInfoFormValues>>(null);
+  const userPlanFormRef = useRef<UseFormReturn<UserPlanFormValues>>(null);
 
   const [editingSection, setEditingSection] = useState<EditingSection>(null);
 
   const isEditingUserInfo = editingSection === "userInfo";
+  const isEditingUserPlan = editingSection === "userPlan";
 
   const disabledInputStyles = {
     input: {
       opacity: 0.9,
-      WebkitTextFillColor: "var(--mantine-color-gray-5)",
+      WebkitTextFillColor: "var(--mantine-color-gray-8)",
     },
   };
 
+  useEffect(() => {
+    if (users.length === 0) setUsers(mockUsers);
+  }, []);
+
+  const user = users.find((u) => u.id === id);
+  if (!user) return <div>User not found</div>;
+
   const handleUserInfoSave = () => {
-    // TODO: implement save logic
-    console.log("Saving user info...");
+    userInfoFormRef.current?.handleSubmit((values) => {
+      updateUser(id!, values);
+    })();
   };
 
   const handleUserPlanSave = () => {
-    // TODO: implement save logic
-    console.log("Saving user plan...");
+    userPlanFormRef.current?.handleSubmit((values) => {
+      updateUser(id!, { classes: values.classes });
+    })();
   };
-
-  
 
   return (
     <MainLayout>
@@ -63,9 +69,10 @@ const UserDetail = () => {
       >
         Grilla de usuarios
       </CustomButton>
+
       <SimpleGrid
         cols={{ base: 1 }}
-        style={{ width: "calc(100% - 48px)", margin: "0", marginTop: 20 }}
+        style={{ width: "calc(100% - 48px)", margin: 0, marginTop: 20 }}
       >
         {/* User basic info */}
         <div>
@@ -78,26 +85,50 @@ const UserDetail = () => {
           />
 
           <UserInfoForm
-            isEditingUserInfo={isEditingUserInfo}
+            ref={userInfoFormRef}
+            isEditing={isEditingUserInfo}
             disabledInputStyles={disabledInputStyles}
-            user={user}
+            defaultValues={user}
+            onSubmit={(values) => updateUser(id!, values)}
           />
         </div>
 
         {/* User plan info */}
         <div style={{ marginTop: 24 }}>
           <SectionActions
-            title="Plan actual"
+            title="Clases"
             section="userPlan"
             editingSection={editingSection}
             setEditingSection={setEditingSection}
             onSave={handleUserPlanSave}
           />
 
-          <Paper shadow="lg" withBorder p="lg">
-            asas
-          </Paper>
+          <UserPlanForm
+            ref={userPlanFormRef}
+            isEditing={isEditingUserPlan}
+            disabledInputStyles={disabledInputStyles}
+            defaultValues={{ classes: user.classes ?? [] }}
+            onSubmit={(values) => updateUser(id!, { classes: values.classes })}
+          />
         </div>
+
+        {/* <div style={{ marginTop: 24 }}>
+          <SectionActions
+            title="Adicional"
+            section="additionalInfo"
+            editingSection={editingSection}
+            setEditingSection={setEditingSection}
+            onSave={handleUserPlanSave}
+          />
+
+          <AdditionalInfoForm
+            ref={userPlanFormRef}
+            isEditing={isEditingUserPlan}
+            disabledInputStyles={disabledInputStyles}
+            defaultValues={{ classes: user.classes ?? [] }}
+            onSubmit={(values) => updateUser(id!, { classes: values.classes })}
+          />
+        </div> */}
       </SimpleGrid>
     </MainLayout>
   );

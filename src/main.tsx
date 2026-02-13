@@ -12,7 +12,8 @@ import "mantine-datatable/styles.layer.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MantineProvider
-      defaultColorScheme="dark"
+      forceColorScheme="light"
+      defaultColorScheme="light"
       theme={{
         components: {
           Input: {

@@ -1,8 +1,11 @@
 import { AppShell, Stack, Tooltip, UnstyledButton } from "@mantine/core";
 import React from "react";
 import {
-  IconClipboardList,
+  IconApple,
+  IconBarbell,
+  IconCalendar,
   IconHome2,
+  IconListCheck,
   IconLogout,
   IconUser,
 } from "@tabler/icons-react";
@@ -19,7 +22,12 @@ interface NavbarLinkProps {
 
 function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   return (
-    <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
+    <Tooltip
+      label={label}
+      position="right"
+      transitionProps={{ duration: 0 }}
+      style={{ paddingTop: 8 }}
+    >
       <UnstyledButton
         style={{ padding: "var(--mantine-spacing-xs)" }}
         onClick={onClick}
@@ -42,7 +50,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const mockdata = [
     { icon: IconHome2, label: "Panel principal", path: "/" },
     { icon: IconUser, label: "Usuarios", path: "/users" },
-    { icon: IconClipboardList, label: "Planes", path: "/plans" },
+    { icon: IconListCheck, label: "Clases", path: "/classes" },
+    { icon: IconCalendar, label: "Calendario", path: "/calendar" },
+    { icon: IconBarbell, label: "Rutinas", path: "/routines" },
+    { icon: IconApple, label: "Dietas", path: "/diets" },
   ];
 
   const links = mockdata.map((link, index) => (
@@ -79,9 +90,10 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
             label="Cerrar sesión"
             position="right"
             transitionProps={{ duration: 0 }}
+            style={{ paddingTop: 8 }}
           >
             <UnstyledButton
-              style={{ padding: "var(--mantine-spacing-xs)" }}
+              style={{ padding: "var(--mantine-spacing-xs)", color: "white" }}
               onClick={() => {
                 setActive(0);
                 navigate("/auth");
@@ -97,7 +109,6 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
       <AppShell.Main
         style={{
           padding: "var(--mantine-spacing-xl)",
-          backgroundColor: "var(--mantine-color-dark-8)",
           marginLeft: "60px",
           display: "flex",
           flexDirection: "column",
