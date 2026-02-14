@@ -3,7 +3,7 @@ import AuthView from "../views/auth";
 import Dashboard from "../views/dashboard";
 import Users from "../views/users";
 import UserDetail from "../views/userDetail";
-import ClassesView from "../views/classes";
+import CalendarView from "../views/calendar";
 import RoutinesView from "../views/routines";
 import DietView from "../views/diets";
 
@@ -16,7 +16,7 @@ export default function RoutesConfig() {
       <Route path="/users" element={<Users />} />
       <Route path="/user/:id" element={<UserDetail />} />
 
-      <Route path="/classes" element={<ClassesView />} />
+      <Route path="/classes" element={<CalendarView />} />
       <Route path="/routines" element={<RoutinesView />} />
       <Route path="/diets" element={<DietView />} />
 
