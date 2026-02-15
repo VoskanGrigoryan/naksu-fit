@@ -1,21 +1,37 @@
-import { Button, Group, MultiSelect, Select, Stack } from "@mantine/core";
+import {
+  Button,
+  Group,
+  MultiSelect,
+  Stack,
+  ColorInput,
+  DEFAULT_THEME,
+  TextInput,
+} from "@mantine/core";
 import { DateInput, TimePicker } from "@mantine/dates";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { CalendarEvent } from ".";
+import type { CalendarEvent } from "../../types/calendar";
+import { eventSchema } from "../../schemas/eventSchema";
 
-const schema = z.object({
-  activity: z.string().min(1),
-  instructor: z.string().min(1),
-  startTime: z.string().min(1),
-  endTime: z.string().min(1),
-  daysOfWeek: z.array(z.string()).min(1),
-  startDate: z.date(),
-  endDate: z.date().nullable().optional(),
-});
+type FormValues = z.infer<typeof eventSchema>;
 
-type FormValues = z.infer<typeof schema>;
+const basicColors = [
+  "dark",
+  "gray",
+  "red",
+  "pink",
+  "grape",
+  "violet",
+  "indigo",
+  "blue",
+  "cyan",
+  "teal",
+  "green",
+  "lime",
+  "yellow",
+  "orange",
+] as const;
 
 const CrearClaseForm = ({
   onSubmit,
@@ -23,7 +39,7 @@ const CrearClaseForm = ({
   onSubmit: (event: CalendarEvent) => void;
 }) => {
   const { handleSubmit, control } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(eventSchema),
     defaultValues: {
       activity: "",
       instructor: "",
@@ -32,6 +48,7 @@ const CrearClaseForm = ({
       daysOfWeek: [],
       startDate: new Date(),
       endDate: null,
+      color: DEFAULT_THEME.colors.blue[6],
     },
   });
 
@@ -45,6 +62,11 @@ const CrearClaseForm = ({
       endRecur: values.endDate
         ? values.endDate.toISOString().split("T")[0]
         : undefined,
+      backgroundColor: values.color,
+      borderColor: values.color,
+      extendedProps: {
+        instructor: values.instructor,
+      },
     };
 
     onSubmit(event);
@@ -57,11 +79,11 @@ const CrearClaseForm = ({
           name="activity"
           control={control}
           render={({ field }) => (
-            <Select
+            <TextInput
               label="Actividad"
-              data={["Muay Thai", "Boxeo", "Yoga"]}
+              placeholder="Ej. Muay Thai, Boxeo, etc"
               value={field.value}
-              onChange={(value) => field.onChange(value ?? "")}
+              onChange={(event) => field.onChange(event.currentTarget.value)}
               required
             />
           )}
@@ -71,11 +93,10 @@ const CrearClaseForm = ({
           name="instructor"
           control={control}
           render={({ field }) => (
-            <Select
+            <TextInput
               label="Instructor"
-              data={["Juanchi", "Enzo", "Yanina"]}
               value={field.value}
-              onChange={(value) => field.onChange(value ?? "")}
+              onChange={(event) => field.onChange(event.currentTarget.value)}
               required
             />
           )}
@@ -138,6 +159,7 @@ const CrearClaseForm = ({
             control={control}
             render={({ field }) => (
               <DateInput
+                clearable
                 label="Desde"
                 value={field.value}
                 onChange={(value) =>
@@ -153,6 +175,7 @@ const CrearClaseForm = ({
             control={control}
             render={({ field }) => (
               <DateInput
+                clearable
                 label="Hasta"
                 value={field.value}
                 onChange={(value) =>
@@ -162,6 +185,27 @@ const CrearClaseForm = ({
             )}
           />
         </Group>
+
+        <Controller
+          name="color"
+          control={control}
+          render={({ field }) => (
+            <ColorInput
+              popoverProps={{
+                position: "top",
+                withArrow: true,
+              }}
+              label="Color de la clase"
+              disallowInput
+              withPicker={false}
+              value={field.value}
+              onChange={(value) => field.onChange(value)}
+              swatches={basicColors.map(
+                (color) => DEFAULT_THEME.colors[color][5],
+              )}
+            />
+          )}
+        />
 
         <Button type="submit">Crear clase</Button>
       </Stack>
