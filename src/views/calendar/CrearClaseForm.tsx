@@ -8,68 +8,57 @@ import {
   TextInput,
 } from "@mantine/core";
 import { DateInput, TimePicker } from "@mantine/dates";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, type SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { CalendarEvent } from "../../types/calendar";
 import { eventSchema } from "../../schemas/eventSchema";
+import { basicColors, daysOfWeek } from "../../utils/constants/calendar";
+import {
+  mapEventToFormValues,
+  mapFormToEvent,
+} from "../../utils/mappers/calendarEvent.mapper";
 
-type FormValues = z.infer<typeof eventSchema>;
+type FormValues = z.output<typeof eventSchema>;
 
-const basicColors = [
-  "dark",
-  "gray",
-  "red",
-  "pink",
-  "grape",
-  "violet",
-  "indigo",
-  "blue",
-  "cyan",
-  "teal",
-  "green",
-  "lime",
-  "yellow",
-  "orange",
-] as const;
-
-const CrearClaseForm = ({
-  onSubmit,
-}: {
+type Props = {
   onSubmit: (event: CalendarEvent) => void;
-}) => {
-  const { handleSubmit, control } = useForm<FormValues>({
-    resolver: zodResolver(eventSchema),
-    defaultValues: {
-      activity: "",
-      instructor: "",
-      startTime: "",
-      endTime: "",
-      daysOfWeek: [],
-      startDate: new Date(),
-      endDate: null,
-      color: DEFAULT_THEME.colors.blue[6],
-    },
+  initialValues?: CalendarEvent;
+};
+
+const defaultFormValues: FormValues = {
+  activity: "",
+  instructor: "",
+  startTime: "",
+  endTime: "",
+  daysOfWeek: [],
+  startDate: new Date(),
+  endDate: null,
+  color: DEFAULT_THEME.colors.blue[6],
+};
+
+const CrearClaseForm = ({ onSubmit, initialValues }: Props) => {
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(eventSchema) as any,
+    defaultValues: initialValues
+      ? mapEventToFormValues(initialValues)
+      : defaultFormValues,
   });
 
-  const submit = (values: FormValues) => {
-    const event: CalendarEvent = {
-      title: values.activity,
-      daysOfWeek: values.daysOfWeek.map(Number),
-      startTime: values.startTime + ":00",
-      endTime: values.endTime + ":00",
-      startRecur: values.startDate.toISOString().split("T")[0],
-      endRecur: values.endDate
-        ? values.endDate.toISOString().split("T")[0]
-        : undefined,
-      backgroundColor: values.color,
-      borderColor: values.color,
-      extendedProps: {
-        instructor: values.instructor,
-      },
-    };
+  useEffect(() => {
+    if (initialValues) {
+      reset(mapEventToFormValues(initialValues));
+    }
+  }, [initialValues, reset]);
 
-    onSubmit(event);
+  const submit: SubmitHandler<FormValues> = (values) => {
+    onSubmit(mapFormToEvent(values, initialValues?.id));
   };
 
   return (
@@ -82,9 +71,8 @@ const CrearClaseForm = ({
             <TextInput
               label="Actividad"
               placeholder="Ej. Muay Thai, Boxeo, etc"
-              value={field.value}
-              onChange={(event) => field.onChange(event.currentTarget.value)}
-              required
+              {...field}
+              error={errors.activity?.message}
             />
           )}
         />
@@ -95,9 +83,8 @@ const CrearClaseForm = ({
           render={({ field }) => (
             <TextInput
               label="Instructor"
-              value={field.value}
-              onChange={(event) => field.onChange(event.currentTarget.value)}
-              required
+              {...field}
+              error={errors.instructor?.message}
             />
           )}
         />
@@ -110,9 +97,10 @@ const CrearClaseForm = ({
               <TimePicker
                 label="Hora inicio"
                 value={field.value}
-                onChange={(value) => field.onChange(value ?? "")}
+                onChange={(v) => field.onChange(v ?? "")}
                 format="24h"
                 withSeconds={false}
+                error={errors.startTime?.message}
               />
             )}
           />
@@ -124,9 +112,10 @@ const CrearClaseForm = ({
               <TimePicker
                 label="Hora fin"
                 value={field.value}
-                onChange={(value) => field.onChange(value ?? "")}
+                onChange={(v) => field.onChange(v ?? "")}
                 format="24h"
                 withSeconds={false}
+                error={errors.endTime?.message}
               />
             )}
           />
@@ -138,17 +127,10 @@ const CrearClaseForm = ({
           render={({ field }) => (
             <MultiSelect
               label="Repetir los días"
-              data={[
-                { value: "1", label: "Lunes" },
-                { value: "2", label: "Martes" },
-                { value: "3", label: "Miércoles" },
-                { value: "4", label: "Jueves" },
-                { value: "5", label: "Viernes" },
-                { value: "6", label: "Sábado" },
-              ]}
+              data={daysOfWeek}
               value={field.value}
-              onChange={(value) => field.onChange(value ?? [])}
-              required
+              onChange={(v) => field.onChange(v ?? [])}
+              error={errors.daysOfWeek?.message}
             />
           )}
         />
@@ -159,13 +141,10 @@ const CrearClaseForm = ({
             control={control}
             render={({ field }) => (
               <DateInput
-                clearable
                 label="Desde"
                 value={field.value}
-                onChange={(value) =>
-                  field.onChange(value ? new Date(value) : new Date())
-                }
-                required
+                onChange={(v) => field.onChange(v)}
+                error={errors.startDate?.message}
               />
             )}
           />
@@ -175,12 +154,10 @@ const CrearClaseForm = ({
             control={control}
             render={({ field }) => (
               <DateInput
-                clearable
                 label="Hasta"
                 value={field.value}
-                onChange={(value) =>
-                  field.onChange(value ? new Date(value) : null)
-                }
+                onChange={(v) => field.onChange(v)}
+                error={errors.endDate?.message}
               />
             )}
           />
@@ -191,23 +168,22 @@ const CrearClaseForm = ({
           control={control}
           render={({ field }) => (
             <ColorInput
-              popoverProps={{
-                position: "top",
-                withArrow: true,
-              }}
               label="Color de la clase"
               disallowInput
               withPicker={false}
               value={field.value}
-              onChange={(value) => field.onChange(value)}
+              onChange={field.onChange}
               swatches={basicColors.map(
                 (color) => DEFAULT_THEME.colors[color][5],
               )}
+              error={errors.color?.message}
             />
           )}
         />
 
-        <Button type="submit">Crear clase</Button>
+        <Button type="submit">
+          {initialValues ? "Guardar cambios" : "Crear clase"}
+        </Button>
       </Stack>
     </form>
   );

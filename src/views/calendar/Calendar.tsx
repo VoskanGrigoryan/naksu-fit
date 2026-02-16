@@ -1,74 +1,54 @@
-import {
-  ActionIcon,
-  Divider,
-  Group,
-  Paper,
-  Stack,
-  Title,
-  Modal,
-} from "@mantine/core";
+import { ActionIcon, Group, Paper, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CustomButton from "../../components/reusable/Button";
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconEdit,
-  IconPlus,
-  IconTrash,
-} from "@tabler/icons-react";
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import esLocale from "@fullcalendar/core/locales/es";
 import { useCalendarStore } from "../../store/calendarStore";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { CalendarApi, EventApi } from "@fullcalendar/core";
+import type { CalendarEvent } from "../../types/calendar";
+import { ConfirmActionModal, EditModal } from "./Modals";
 
-const Calendar = () => {
+const Calendar = ({ events }: { events: CalendarEvent[] }) => {
   const calendarRef = useRef<FullCalendar | null>(null);
-  const events = useCalendarStore((s) => s.events);
+
   const removeEvent = useCalendarStore((s) => s.removeEvent);
+  const updateEvent = useCalendarStore((s) => s.updateEvent);
 
   const [selectedEvent, setSelectedEvent] = useState<EventApi | null>(null);
+
   const [opened, { open, close }] = useDisclosure(false);
+  const [editOpened, { open: openEdit, close: closeEdit }] =
+    useDisclosure(false);
 
   const getApi = (): CalendarApi | undefined => calendarRef.current?.getApi();
 
-  console.log(events);
+  const originalEvent = useMemo(() => {
+    if (!selectedEvent) return undefined;
+    return events.find((e) => e.id === selectedEvent.id);
+  }, [selectedEvent, events]);
+
+  const handleCloseDetails = () => {
+    setSelectedEvent(null);
+    close();
+  };
+
+  const handlePrev = () => getApi()?.prev();
+  const handleNext = () => getApi()?.next();
+  const handleToday = () => getApi()?.today();
+
   return (
     <>
       <Group align="stretch" wrap="nowrap">
-        <Paper w={300} shadow="lg" p="md" withBorder radius="md">
-          <Stack justify="space-between" style={{ flex: 1 }}>
-            <div>
-              <Title order={4}>Templates de clases</Title>
-              <Divider my="sm" />
-              <Paper
-                p="sm"
-                c="white"
-                radius="md"
-                style={{
-                  backgroundColor: "var(--mantine-color-green-4)",
-                }}
-              >
-                Yoga
-              </Paper>
-            </div>
-
-            <CustomButton
-              rightSection={<IconPlus size={16} style={{ marginBottom: 4 }} />}
-            >
-              Crear template
-            </CustomButton>
-          </Stack>
-        </Paper>
-
         <Paper
           style={{
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            height: "calc(90vh - 50px)",
+            height: "calc(90vh - 30px)",
           }}
           shadow="lg"
           p="md"
@@ -79,7 +59,7 @@ const Calendar = () => {
             <Title order={3}>Calendario semanal</Title>
 
             <Group>
-              <ActionIcon variant="light" onClick={() => getApi()?.prev()}>
+              <ActionIcon variant="light" onClick={handlePrev}>
                 <IconChevronLeft size={18} />
               </ActionIcon>
 
@@ -87,12 +67,12 @@ const Calendar = () => {
                 size="compact-md"
                 variant="light"
                 fw={500}
-                onClick={() => getApi()?.today()}
+                onClick={handleToday}
               >
                 Semana actual
               </CustomButton>
 
-              <ActionIcon variant="light" onClick={() => getApi()?.next()}>
+              <ActionIcon variant="light" onClick={handleNext}>
                 <IconChevronRight size={18} />
               </ActionIcon>
             </Group>
@@ -119,56 +99,32 @@ const Calendar = () => {
         </Paper>
       </Group>
 
-      <Modal
-        size="sm"
+      <ConfirmActionModal
         opened={opened}
-        onClose={() => {
-          setSelectedEvent(null);
+        onClose={handleCloseDetails}
+        event={selectedEvent}
+        onEdit={() => {
           close();
+          openEdit();
         }}
-        title={
-          selectedEvent && (
-            <Title order={3} fw={500}>
-              {[selectedEvent.title, selectedEvent.extendedProps?.instructor]
-                .filter(Boolean)
-                .join(" - ")}
-            </Title>
-          )
-        }
-        centered
-      >
-        <Group justify="center" grow>
-          <CustomButton
-            rightSection={
-              <IconEdit
-                size={20}
-                stroke={1.5}
-                style={{ marginBottom: "4px" }}
-              />
-            }
-          >
-            Modificar
-          </CustomButton>
-          <CustomButton
-            rightSection={
-              <IconTrash
-                size={20}
-                stroke={1.5}
-                style={{ marginBottom: "4px" }}
-              />
-            }
-            color="red.5"
-            onClick={() => {
-              if (selectedEvent) {
-                removeEvent(selectedEvent.id);
-              }
-              close();
-            }}
-          >
-            Eliminar
-          </CustomButton>
-        </Group>
-      </Modal>
+        onDelete={(id) => removeEvent(id)}
+      />
+
+      <EditModal
+        opened={editOpened}
+        onClose={closeEdit}
+        event={originalEvent}
+        onSubmit={(updated) => {
+          if (!originalEvent) return;
+
+          const mergedEvent: CalendarEvent = {
+            ...originalEvent,
+            ...updated,
+          };
+
+          updateEvent(originalEvent.id, mergedEvent);
+        }}
+      />
     </>
   );
 };

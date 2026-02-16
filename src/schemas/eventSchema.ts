@@ -12,9 +12,9 @@ export const eventSchema = z
 
     daysOfWeek: z.array(z.string()).min(1, "Seleccione al menos un día"),
 
-    startDate: z.date(),
-
-    endDate: z.date().nullable().optional(),
+    startDate: z.coerce.date(),
+    
+    endDate: z.coerce.date().nullable().optional(),
 
     color: z.string().min(1),
   })

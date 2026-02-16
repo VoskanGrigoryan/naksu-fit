@@ -8,7 +8,8 @@ import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/notifications/styles.css";
 import "mantine-datatable/styles.layer.css";
-
+import { DatesProvider } from "@mantine/dates";
+import "dayjs/locale/es";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -37,9 +38,11 @@ createRoot(document.getElementById("root")!).render(
         },
       }}
     >
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <DatesProvider settings={{ locale: "es" }}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </DatesProvider>
     </MantineProvider>
   </StrictMode>,
 );
