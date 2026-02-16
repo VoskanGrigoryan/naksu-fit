@@ -5,7 +5,6 @@ import {
   IconBarbell,
   IconCalendar,
   IconHome2,
-  IconListCheck,
   IconLogout,
   IconUser,
 } from "@tabler/icons-react";
@@ -50,8 +49,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   const mockdata = [
     { icon: IconHome2, label: "Panel principal", path: "/" },
     { icon: IconUser, label: "Usuarios", path: "/users" },
-    { icon: IconListCheck, label: "Clases", path: "/classes" },
-    { icon: IconCalendar, label: "Calendario", path: "/calendar" },
+    { icon: IconCalendar, label: "Clases", path: "/classes" },
     { icon: IconBarbell, label: "Rutinas", path: "/routines" },
     { icon: IconApple, label: "Dietas", path: "/diets" },
   ];
