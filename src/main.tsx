@@ -10,6 +10,7 @@ import "@mantine/notifications/styles.css";
 import "mantine-datatable/styles.layer.css";
 import { DatesProvider } from "@mantine/dates";
 import "dayjs/locale/es";
+import '@mantine/charts/styles.css';
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
