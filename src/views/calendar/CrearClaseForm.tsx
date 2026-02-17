@@ -58,7 +58,8 @@ const CrearClaseForm = ({ onSubmit, initialValues }: Props) => {
   }, [initialValues, reset]);
 
   const submit: SubmitHandler<FormValues> = (values) => {
-    onSubmit(mapFormToEvent(values, initialValues?.id));
+    if(initialValues)
+    onSubmit(mapFormToEvent(values, initialValues.id));
   };
 
   return (

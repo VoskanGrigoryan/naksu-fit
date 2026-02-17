@@ -16,7 +16,7 @@ export const mapEventToFormValues = (event: CalendarEvent): FormValues => ({
   color: event.backgroundColor,
 });
 
-export const mapFormToEvent = (values: FormValues, id?: string): CalendarEvent => ({
+export const mapFormToEvent = (values: FormValues, id: string): CalendarEvent => ({
   id,
   title: values.activity,
   daysOfWeek: values.daysOfWeek.map(Number),
