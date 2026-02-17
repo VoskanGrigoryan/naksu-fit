@@ -1,4 +1,12 @@
-import { Badge, Card, Stack, Text, Title, SimpleGrid, ScrollArea } from "@mantine/core";
+import {
+  Badge,
+  Card,
+  Stack,
+  Text,
+  Title,
+  SimpleGrid,
+  ScrollArea,
+} from "@mantine/core";
 import MainLayout from "../../layouts/main/MainLayout";
 import { BarChart } from "@mantine/charts";
 
@@ -41,22 +49,28 @@ const Dashboard = () => {
         {/* Top KPIs */}
         <SimpleGrid cols={3} spacing="md">
           <Card shadow="sm" padding="lg">
-            <Title order={4}>Total Users</Title>
-            <Text size="xl" fw={700}>120</Text>
+            <Title order={4}>Usuarios totales</Title>
+            <Text size="xl" fw={700}>
+              120
+            </Text>
           </Card>
           <Card shadow="sm" padding="lg">
-            <Title order={4}>Active Users (This Week)</Title>
-            <Text size="xl" fw={700}>85</Text>
+            <Title order={4}>Usuarios activos (Mensual)</Title>
+            <Text size="xl" fw={700}>
+              85
+            </Text>
           </Card>
           <Card shadow="sm" padding="lg">
-            <Title order={4}>New Users</Title>
-            <Text size="xl" fw={700}>5</Text>
+            <Title order={4}>Nuevos usuarios (Mes actual)</Title>
+            <Text size="xl" fw={700}>
+              5
+            </Text>
           </Card>
         </SimpleGrid>
 
         {/* Classes This Week */}
         <Card shadow="sm" padding="lg" style={{ height: 350 }}>
-          <Title order={5}>Classes This Week</Title>
+          <Title order={5}>Actividades esta semana</Title>
           <BarChart
             h={250}
             data={classesThisWeekData}
@@ -68,9 +82,9 @@ const Dashboard = () => {
 
         {/* Today's Classes (scrollable) */}
         <Card shadow="sm" padding="lg">
-          <Title order={5}>Today's Classes</Title>
+          <Title order={5}>Clases hoy</Title>
           <ScrollArea style={{ maxHeight: 200, marginTop: 8 }}>
-            <Stack >
+            <Stack>
               {todayClasses.map((cls, i) => (
                 <div
                   key={i}
@@ -80,7 +94,9 @@ const Dashboard = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Text>{cls.type} - {cls.instructor}</Text>
+                  <Text>
+                    {cls.type} - {cls.instructor}
+                  </Text>
                   <Badge color={cls.booked === cls.capacity ? "green" : "blue"}>
                     {cls.booked}/{cls.capacity}
                   </Badge>
@@ -91,8 +107,8 @@ const Dashboard = () => {
         </Card>
 
         {/* User Growth */}
-        <Card shadow="sm" padding="lg" style={{ height: 350 }}>
-          <Title order={5}>User Growth</Title>
+        <Card shadow="md" p="lg" style={{ height: 350 }}>
+          <Title order={5}>Crecimiento de usuarios</Title>
           <BarChart
             h={250}
             data={userGrowthData}
