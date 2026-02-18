@@ -8,12 +8,58 @@
 
 .logoContainer {
   display: flex;
+  justify-content: center;   /* centers horizontally */
   align-items: center;
-  margin-bottom: 12px;
+  width: 100%;
 }
 
 .paper {
   width: 100%;
   max-width: 400px;
   height: fit-content;
+}
+
+/* UPDATED */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.imageSection {
+  flex: 0 0 70%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  @media (max-width: var(--mantine-breakpoint-sm)) {
+    display: none;
+  }
+}
+
+.form {
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  border-right: 1px solid
+    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-7));
+
+  padding: 30px;
+  padding-top: 80px;
+  border-radius: 0;
+
+  @media (max-width: var(--mantine-breakpoint-sm)) {
+    flex: 1;
+    max-width: 100%;
+  }
+}
+
+.title {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  font-family: Outfit, var(--mantine-font-family);
+  font-weight: 500;
+  text-align: center;
+  margin-top: var(--mantine-spacing-md);
+  margin-bottom: 50px;
 }
