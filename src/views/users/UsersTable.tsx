@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import { useUsersStore } from "../../store/usersStore";
-
+import styles from "./Users.module.css";
 import { getUserColumns } from "./columns";
 
 export default function UsersTable({
@@ -75,7 +75,7 @@ export default function UsersTable({
 
   return (
     <Box style={{ flex: 1, minHeight: 0 }}>
-      <Paper radius="md" shadow="lg" style={{ height: "calc(100vh - 120px)" }}>
+      <Paper radius="md" shadow="lg" style={{ height: "calc(100vh - 130px)" }}>
         <DataTable
           fetching={loading || reloading}
           withTableBorder
@@ -90,12 +90,11 @@ export default function UsersTable({
           sortStatus={sortStatus}
           onSortStatusChange={setSortStatus}
           noRecordsText="No se han encontrado usuarios"
-          height="calc(100vh - 120px)"
+          height="calc(100vh - 130px)"
           style={{ borderRadius: 4 }}
-          styles={{
-            table: { backgroundColor: "var(--mantine-color-gray-0)" },
-            header: { backgroundColor: "var(--mantine-color-gray-4)" },
-          }}
+          classNames={{
+    header: styles.tableHeader,
+  }}
         />
       </Paper>
     </Box>

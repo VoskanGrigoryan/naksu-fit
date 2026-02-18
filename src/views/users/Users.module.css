@@ -6,3 +6,19 @@
 .icon:hover {
   filter: brightness(1.3);
 }
+
+.tableHeader {
+  background-color: var(--mantine-color-blue-5);
+  color: white;
+}
+
+.tableHeader th {
+  background-color: var(--mantine-color-blue-5);
+  color: white;
+  transition: background-color 0.15s ease;
+}
+
+.tableHeader th:hover {
+  background-color: var(--mantine-color-blue-6);
+  color: white;
+}

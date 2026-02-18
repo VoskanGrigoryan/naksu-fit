@@ -5,7 +5,7 @@ import UsersTable from "./UsersTable";
 
 import { useUsersStore } from "../../store/usersStore";
 import { mockUsers } from "../../mocks/userTableData";
-import MenuOptions from "./MenuOptions";
+import TableOptions from "./TableOptions";
 
 const Users = () => {
   const { users, setUsers } = useUsersStore();
@@ -35,7 +35,7 @@ const Users = () => {
   return (
     <MainLayout>
       <Stack style={{ flex: 1 }} gap="sm">
-        <MenuOptions
+        <TableOptions
           initialLoading={initialLoading}
           handleReload={handleReload}
         />

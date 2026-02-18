@@ -48,7 +48,7 @@ const Calendar = ({ events }: { events: CalendarEvent[] }) => {
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            height: "calc(90vh - 30px)",
+            height: "calc(90vh - 50px)",
           }}
           shadow="lg"
           p="md"

@@ -1,4 +1,4 @@
-import { Group, Select } from "@mantine/core";
+import { Group, HoverCard, Select, Text } from "@mantine/core";
 import CustomButton from "../../components/reusable/Button";
 import { IconFilter, IconFilterOff, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
@@ -41,23 +41,43 @@ const HeaderControls = ({
   ];
 
   return (
-    <Group justify="space-between" wrap="nowrap">
+    <Group justify="space-between" wrap="nowrap" mb={12}>
       <Group>
-        <Select
-          placeholder="Instructor"
-          data={instructorOptions}
-          w={200}
-          value={instructor}
-          onChange={(v) => setInstructor(v!)}
-        />
+        <HoverCard width={280} shadow="md">
+          <HoverCard.Target>
+            <Select
+              placeholder="Instructor"
+              data={instructorOptions}
+              w={200}
+              value={instructor}
+              onChange={(v) => setInstructor(v!)}
+            />
+          </HoverCard.Target>
+          <HoverCard.Dropdown>
+            <Text size="sm">
+              Filtrar por los instructores que tengas en el calendario, de lo
+              contrario aparecen todos
+            </Text>
+          </HoverCard.Dropdown>
+        </HoverCard>
 
-        <Select
-          placeholder="Actividad"
-          data={activityOptions}
-          w={200}
-          value={activity}
-          onChange={(v) => setActivity(v!)}
-        />
+        <HoverCard width={280} shadow="md">
+          <HoverCard.Target>
+            <Select
+              placeholder="Actividad"
+              data={activityOptions}
+              w={200}
+              value={activity}
+              onChange={(v) => setActivity(v!)}
+            />
+          </HoverCard.Target>
+          <HoverCard.Dropdown>
+            <Text size="sm">
+              Filtrar por las clases que tengas en el calendario, de lo
+              contrario aparecen todas
+            </Text>
+          </HoverCard.Dropdown>
+        </HoverCard>
 
         <CustomButton
           disabled={isDefault}
